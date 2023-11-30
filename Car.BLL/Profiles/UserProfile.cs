@@ -2,7 +2,7 @@
 using BLL.Services.Models.DtoModels;
 using DAL.Models.Entity;
 
-namespace BLL.Services.Profiles
+namespace BLL.Profiles
 {
     public class UserProfile : Profile
     {
@@ -13,7 +13,7 @@ namespace BLL.Services.Profiles
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(userDto => userDto.Name))
                 .ForMember(dest => dest.Login, opt => opt.MapFrom(userDto => userDto.Login))
                 .ForMember(dest => dest.Password, opt => opt.MapFrom(userDto => userDto.Password))
-                .ForMember(dest => dest.Role.Name, opt => opt.MapFrom(userDto => userDto.RoleName));
+                .ForMember(dest => dest.RoleId, opt => opt.MapFrom(userDto => userDto.RoleId));
         }
     }
 }
