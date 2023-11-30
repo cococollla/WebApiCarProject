@@ -68,7 +68,7 @@ namespace API.Controllers
         {
             bool isExist = await _userServices.IsExistUser(login);
 
-            return Ok(isExist); 
+            return Ok(isExist);
         }
     }
 }

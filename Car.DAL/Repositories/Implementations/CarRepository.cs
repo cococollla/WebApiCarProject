@@ -3,11 +3,6 @@ using DAL.Common.Exceptions;
 using DAL.Models.Entity;
 using DAL.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Repositories.Implementations
 {
