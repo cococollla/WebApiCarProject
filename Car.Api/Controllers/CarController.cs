@@ -1,5 +1,6 @@
 ﻿using BLL.Services.Contracts;
 using BLL.Services.Models.DtoModels;
+using DAL.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -34,9 +35,20 @@ namespace API.Controllers
         [HttpGet("id")]
         public async Task<ActionResult<CarDto>> GetCarById(int id)
         {
-            var car = await _carServices.GetCarById(id);
+            try
+            {
+                var car = await _carServices.GetCarById(id);
 
-            return Ok(car);
+                return Ok(car);
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet]
@@ -50,9 +62,20 @@ namespace API.Controllers
         [HttpDelete("id")]
         public async Task<IActionResult> DeleteCar(int id)
         {
-            await _carServices.DeleteCar(id);
+            try
+            {
+                await _carServices.DeleteCar(id);
 
-            return Ok();
+                return Ok();
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

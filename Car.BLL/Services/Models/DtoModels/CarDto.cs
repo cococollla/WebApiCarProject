@@ -3,7 +3,6 @@
     public class CarDto
     {
         public string YearRelese { get; set; }
-
         public double Price { get; set; }
         public string? ShorDescription { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using BLL.Services.Contracts;
 using BLL.Services.Models.DtoModels;
+using DAL.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -26,25 +27,58 @@ namespace API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UserDto user)
         {
-            await _userServices.UpdateUser(user);
+            try
+            {
+                await _userServices.UpdateUser(user);
 
-            return Ok();
+                return Ok();
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("id")]
         public async Task<ActionResult<CarDto>> GetUserById(int id)
         {
-            var user = await _userServices.GetUserByid(id);
+            try
+            {
+                var user = await _userServices.GetUserByid(id);
 
-            return Ok(user);
+                return Ok(user);
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("login")]
         public async Task<ActionResult<CarDto>> GetUserByLogin(string login)
         {
-            var user = await _userServices.GetUserByLogin(login);
+            try
+            {
+                var user = await _userServices.GetUserByLogin(login);
 
-            return Ok(user);
+                return Ok(user);
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet]
@@ -58,9 +92,20 @@ namespace API.Controllers
         [HttpDelete("id")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            await _userServices.DeleteUser(id);
+            try
+            {
+                await _userServices.DeleteUser(id);
 
-            return Ok();
+                return Ok();
+            }
+            catch (NotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet]
