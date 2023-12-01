@@ -1,8 +1,8 @@
-using BLL.Services.Contracts;
-using BLL.Services.Implementations;
-using DAL.Models.Entity;
-using DAL.Repositories.Contracts;
-using DAL.Repositories.Implementations;
+using CarWebService.BLL.Services.Contracts;
+using CarWebService.BLL.Services.Implementations;
+using CarWebService.DAL.Models.Entity;
+using CarWebService.DAL.Repositories.Contracts;
+using CarWebService.DAL.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

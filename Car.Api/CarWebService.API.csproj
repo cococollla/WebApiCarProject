@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Car.BLL\BLL.csproj" />
+    <ProjectReference Include="..\Car.BLL\CarWebService.BLL.csproj" />
   </ItemGroup>
 
 </Project>

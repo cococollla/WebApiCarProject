@@ -1,7 +1,6 @@
-﻿using BLL.Services.Models.DtoModels;
-using DAL.Models.Entity;
+﻿using CarWebService.BLL.Services.Models.DtoModels;
 
-namespace BLL.Services.Contracts
+namespace CarWebService.BLL.Services.Contracts
 {
     public interface IUserServices
     {

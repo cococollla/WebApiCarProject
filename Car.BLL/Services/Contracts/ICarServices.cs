@@ -1,10 +1,10 @@
-﻿using BLL.Services.Models.DtoModels;
+﻿using CarWebService.BLL.Services.Models.DtoModels;
 
-namespace BLL.Services.Contracts
+namespace CarWebService.BLL.Services.Contracts
 {
     public interface ICarServices
     {
-        public Task AddCar(CarDto command);
+        public Task<int> AddCar(CarDto command);
         public Task<List<CarDto>> GetAllCars();
         public Task<CarDto> GetCarById(int id);
         public Task UpdateCar(CarDto command);

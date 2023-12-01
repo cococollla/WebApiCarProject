@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using BLL.Services.Models.DtoModels;
-using DAL.Models.Entity;
+using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.DAL.Models.Entity;
 
-namespace BLL.Profiles
+namespace CarWebService.BLL.Profiles
 {
     public class UserProfile : Profile
     {

@@ -1,9 +1,9 @@
-﻿using BLL.Services.Contracts;
-using BLL.Services.Models.DtoModels;
-using DAL.Common.Exceptions;
+﻿using CarWebService.BLL.Services.Contracts;
+using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.DAL.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers
+namespace CarWebService.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -19,17 +19,36 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCar(CarDto carDto)
         {
-            await _carServices.AddCar(carDto);
+            try
+            {
+                var carId = await _carServices.AddCar(carDto);
+                //ResponseHeaderHelper.AddToResponseHeader(HttpContext, carId);
 
-            return Ok();
+                return Created($"api/Car/GetCarById/{carId}", carId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, ex.Message);
+            }
         }
 
         [HttpPut]
-        public async Task<IActionResult> Updatecar(CarDto carDto)
+        public async Task<IActionResult> UpdateCar(CarDto carDto)
         {
-            await _carServices.UpdateCar(carDto);
+            try
+            {
+                await _carServices.UpdateCar(carDto);
 
-            return Ok();
+                return NoContent();
+            }
+            catch (NotFoundException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet("id")]
@@ -41,22 +60,33 @@ namespace API.Controllers
 
                 return Ok(car);
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status404NotFound);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpGet]
         public async Task<ActionResult<List<CarDto>>> GetCars()
         {
-            var cars = await _carServices.GetAllCars();
+            try
+            {
+                var cars = await _carServices.GetAllCars();
 
-            return Ok(cars);
+                return Ok(cars);
+            }
+            catch (NotFoundException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpDelete("id")]
@@ -68,13 +98,13 @@ namespace API.Controllers
 
                 return Ok();
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status404NotFound);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }

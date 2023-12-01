@@ -3,17 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Car.DAL", "Car.DAL", "{84A98A95-E8BB-4043-A627-D3089B442D10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarWebService.DAL", "Car.DAL\CarWebService.DAL.csproj", "{2AE41946-A69A-47F9-9ABC-F75109A486FB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Car.BLL", "Car.BLL", "{AF7D45B2-7BEB-4C06-8353-81DAC0E4ABF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarWebService.BLL", "Car.BLL\CarWebService.BLL.csproj", "{2DEC89EA-7CEE-49A8-A0C9-0B638FEE0474}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Car.Api", "Car.Api", "{3B3FC6AC-66EA-46D7-8464-213B77ABEDC4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "Car.DAL\DAL.csproj", "{2AE41946-A69A-47F9-9ABC-F75109A486FB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "Car.BLL\BLL.csproj", "{2DEC89EA-7CEE-49A8-A0C9-0B638FEE0474}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "Car.Api\API.csproj", "{86D355FA-D246-4051-BFC7-628DD87342E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarWebService.API", "Car.Api\CarWebService.API.csproj", "{86D355FA-D246-4051-BFC7-628DD87342E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,11 +30,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{2AE41946-A69A-47F9-9ABC-F75109A486FB} = {84A98A95-E8BB-4043-A627-D3089B442D10}
-		{2DEC89EA-7CEE-49A8-A0C9-0B638FEE0474} = {AF7D45B2-7BEB-4C06-8353-81DAC0E4ABF8}
-		{86D355FA-D246-4051-BFC7-628DD87342E7} = {3B3FC6AC-66EA-46D7-8464-213B77ABEDC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01E9D5F5-5918-4FE7-A165-A1B05A6EF448}

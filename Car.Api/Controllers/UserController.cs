@@ -1,9 +1,9 @@
-﻿using BLL.Services.Contracts;
-using BLL.Services.Models.DtoModels;
-using DAL.Common.Exceptions;
+﻿using CarWebService.BLL.Services.Contracts;
+using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.DAL.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controllers
+namespace CarWebService.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -19,9 +19,16 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser(UserDto user)
         {
-            await _userServices.CreateUser(user);
+            try
+            {
+                await _userServices.CreateUser(user);
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
         }
 
         [HttpPut]
@@ -31,15 +38,15 @@ namespace API.Controllers
             {
                 await _userServices.UpdateUser(user);
 
-                return Ok();
+                return NoContent();
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status404NotFound);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -52,13 +59,13 @@ namespace API.Controllers
 
                 return Ok(user);
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status404NotFound);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -71,22 +78,33 @@ namespace API.Controllers
 
                 return Ok(user);
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status404NotFound);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
         [HttpGet]
         public async Task<ActionResult<List<CarDto>>> GetUsers()
         {
-            var users = await _userServices.GetAllUsers();
+            try
+            {
+                var users = await _userServices.GetAllUsers();
 
-            return Ok(users);
+                return Ok(users);
+            }
+            catch (NotFoundException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpDelete("id")]
@@ -98,13 +116,13 @@ namespace API.Controllers
 
                 return Ok();
             }
-            catch (NotFoundException ex)
+            catch (NotFoundException)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status404NotFound);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 

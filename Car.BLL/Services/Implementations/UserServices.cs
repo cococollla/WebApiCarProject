@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using BLL.Services.Contracts;
-using BLL.Services.Models.DtoModels;
-using DAL.Models.Entity;
-using DAL.Repositories.Contracts;
+using CarWebService.BLL.Services.Contracts;
+using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.DAL.Models.Entity;
+using CarWebService.DAL.Repositories.Contracts;
 
-namespace BLL.Services.Implementations
+namespace CarWebService.BLL.Services.Implementations
 {
     public class UserServices : IUserServices
     {

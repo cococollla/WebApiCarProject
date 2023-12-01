@@ -1,10 +1,10 @@
-﻿using DAL.Models.Entity;
+﻿using CarWebService.DAL.Models.Entity;
 
-namespace DAL.Repositories.Contracts
+namespace CarWebService.DAL.Repositories.Contracts
 {
     public interface ICarRepository
     {
-        public Task AddCar(Car request);
+        public Task<int> AddCar(Car request);
         public Task<List<Car>> GetAllCars();
         public Task<Car> GetCarById(int id);
         public Task UpdateCar(Car request);

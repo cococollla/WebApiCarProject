@@ -1,6 +1,6 @@
-﻿using DAL.Models.Entity;
+﻿using CarWebService.DAL.Models.Entity;
 
-namespace DAL.Repositories.Contracts
+namespace CarWebService.DAL.Repositories.Contracts
 {
     public interface IUserRepository
     {

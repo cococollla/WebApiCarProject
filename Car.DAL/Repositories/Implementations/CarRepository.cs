@@ -1,16 +1,15 @@
-﻿using AutoMapper;
-using DAL.Common.Exceptions;
-using DAL.Models.Entity;
-using DAL.Repositories.Contracts;
+﻿using CarWebService.DAL.Common.Exceptions;
+using CarWebService.DAL.Models.Entity;
+using CarWebService.DAL.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Repositories.Implementations
+namespace CarWebService.DAL.Repositories.Implementations
 {
     public class CarRepository : ICarRepository
     {
         private readonly ApplicationContext _context;
 
-        public CarRepository(ApplicationContext context, IMapper mapper)
+        public CarRepository(ApplicationContext context)
         {
             _context = context;
         }
@@ -20,10 +19,21 @@ namespace DAL.Repositories.Implementations
         /// Добавляет автомобиль в БД
         /// </summary>
         /// <param name="request">Данные автомобиля</param>
-        public async Task AddCar(Car request)
+        public async Task<int> AddCar(Car request)
         {
-            await _context.Cars.AddAsync(request);
+            var car = new Car
+            {
+                YearRelese = request.YearRelese,
+                Price = request.Price,
+                BrandId = request.BrandId,
+                ColorId = request.ColorId,
+                ShorDescription = request.ShorDescription,
+            };
+
+            await _context.Cars.AddAsync(car);
             await _context.SaveChangesAsync();
+
+            return car.Id;
         }
 
         /// <summary>
@@ -49,8 +59,12 @@ namespace DAL.Repositories.Implementations
         /// <returns>Список автомобилей</returns>
         public async Task<List<Car>> GetAllCars()
         {
-
             var cars = await _context.Cars.Include(b => b.Brand).Include(c => c.Color).ToListAsync();
+
+            if (cars == null)
+            {
+                throw new NotFoundException("Not found");
+            }
 
             return cars;
         }

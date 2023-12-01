@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using BLL.Services.Contracts;
-using BLL.Services.Models.DtoModels;
-using DAL.Models.Entity;
-using DAL.Repositories.Contracts;
+using CarWebService.BLL.Services.Contracts;
+using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.DAL.Models.Entity;
+using CarWebService.DAL.Repositories.Contracts;
 
-namespace BLL.Services.Implementations
+namespace CarWebService.BLL.Services.Implementations
 {
     public class CarServices : ICarServices
     {
@@ -17,10 +17,12 @@ namespace BLL.Services.Implementations
             _carRepository = carRepository;
         }
 
-        public async Task AddCar(CarDto command)
+        public async Task<int> AddCar(CarDto command)
         {
             var car = _mapper.Map<Car>(command);
-            await _carRepository.AddCar(car);
+            var carId = await _carRepository.AddCar(car);
+
+            return carId;
         }
 
         public async Task DeleteCar(int id)

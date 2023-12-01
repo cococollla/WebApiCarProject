@@ -1,9 +1,9 @@
-﻿using DAL.Common.Exceptions;
-using DAL.Models.Entity;
-using DAL.Repositories.Contracts;
+﻿using CarWebService.DAL.Common.Exceptions;
+using CarWebService.DAL.Models.Entity;
+using CarWebService.DAL.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Repositories.Implementations
+namespace CarWebService.DAL.Repositories.Implementations
 {
     public class UserRepository : IUserRepository
     {
@@ -49,6 +49,11 @@ namespace DAL.Repositories.Implementations
         public async Task<List<User>> GetAllUsers()
         {
             var users = await _context.Users.Include(u => u.Role).ToListAsync();
+
+            if (users == null)
+            {
+                throw new NotFoundException("Not found");
+            }
 
             return users;
         }

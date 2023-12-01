@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Models.Entity
+namespace CarWebService.DAL.Models.Entity
 {
     public class ApplicationContext : DbContext
     {

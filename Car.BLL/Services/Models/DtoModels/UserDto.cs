@@ -1,4 +1,4 @@
-﻿namespace BLL.Services.Models.DtoModels
+﻿namespace CarWebService.BLL.Services.Models.DtoModels
 {
     public class UserDto
     {
