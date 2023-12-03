@@ -21,19 +21,10 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// <param name="request">Данные автомобиля</param>
         public async Task<int> AddCar(Car request)
         {
-            var car = new Car
-            {
-                YearRelese = request.YearRelese,
-                Price = request.Price,
-                BrandId = request.BrandId,
-                ColorId = request.ColorId,
-                ShorDescription = request.ShorDescription,
-            };
-
-            await _context.Cars.AddAsync(car);
+            await _context.Cars.AddAsync(request);
             await _context.SaveChangesAsync();
 
-            return car.Id;
+            return request.Id;
         }
 
         /// <summary>
