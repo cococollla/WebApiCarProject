@@ -28,9 +28,9 @@ namespace CarWebService.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            user.Role = await _userService.GetDefaultRole();
+            var role = await _userService.GetDefaultRole();
             var result = await _userManager.CreateAsync(
-                new User() { UserName = user.UserName, Email = user.Email, Role = user.Role },
+                new User() { UserName = user.Name, Email = user.Email, Role = role },
                 user.Password
             );
 
@@ -40,7 +40,7 @@ namespace CarWebService.API.Controllers
             }
 
             user.Password = null;
-            return Created("", user);
+            return Created("", result);
         }
 
         [Authorize]
@@ -56,7 +56,7 @@ namespace CarWebService.API.Controllers
 
             return new UserDto
             {
-                UserName = user.UserName,
+                Name = user.UserName,
                 Email = user.Email
             };
         }
