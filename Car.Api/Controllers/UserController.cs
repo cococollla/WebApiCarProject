@@ -1,6 +1,7 @@
-﻿using CarWebService.BLL.Services.Contracts;
-using CarWebService.BLL.Services.Models.DtoModels;
-using CarWebService.DAL.Common.Exceptions;
+﻿using CarWebService.API.ResourceModels;
+using CarWebService.BLL.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
@@ -9,129 +10,81 @@ namespace CarWebService.API.Controllers
     [Route("api/[controller]/[action]")]
     public class UserController : ControllerBase
     {
-        private readonly IUserServices _userServices;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ITokenServices _tokenServices;
 
-        public UserController(IUserServices userServices)
+        public UserController(UserManager<IdentityUser> userManager, ITokenServices tokenServices)
         {
-            _userServices = userServices;
+            _userManager = userManager;
+            _tokenServices = tokenServices;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(UserDto user)
+        public async Task<ActionResult<User>> PostUser(User user)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                await _userServices.CreateUser(user);
+                return BadRequest(ModelState);
+            }
 
-                return Ok();
-            }
-            catch (Exception)
+            var result = await _userManager.CreateAsync(
+                new IdentityUser() { UserName = user.UserName, Email = user.Email },
+                user.Password
+            );
+
+            if (!result.Succeeded)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return BadRequest(result.Errors);
             }
+
+            user.Password = null;
+            return Created("", user);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser(UserDto user)
+        [Authorize]
+        [HttpGet("{username}")]
+        public async Task<ActionResult<User>> GetUser(string username)
         {
-            try
-            {
-                await _userServices.UpdateUser(user);
+            IdentityUser user = await _userManager.FindByNameAsync(username);
 
-                return NoContent();
-            }
-            catch (NotFoundException)
+            if (user == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                return NotFound();
             }
-            catch (Exception)
+
+            return new User
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+                UserName = user.UserName,
+                Email = user.Email
+            };
         }
 
-        [HttpGet("id")]
-        public async Task<ActionResult<CarDto>> GetUserById(int id)
+
+        [HttpPost("BearerToken")]
+        public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var user = await _userServices.GetUserByid(id);
+                return BadRequest("Bad credentials");
+            }
 
-                return Ok(user);
-            }
-            catch (NotFoundException)
-            {
-                return StatusCode(StatusCodes.Status404NotFound);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
+            var user = await _userManager.FindByNameAsync(request.UserName);
 
-        [HttpGet("login")]
-        public async Task<ActionResult<CarDto>> GetUserByLogin(string login)
-        {
-            try
+            if (user == null)
             {
-                var user = await _userServices.GetUserByLogin(login);
+                return BadRequest("Bad credentials");
+            }
 
-                return Ok(user);
-            }
-            catch (NotFoundException)
-            {
-                return StatusCode(StatusCodes.Status404NotFound);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
 
-        [HttpGet]
-        public async Task<ActionResult<List<CarDto>>> GetUsers()
-        {
-            try
+            if (!isPasswordValid)
             {
-                var users = await _userServices.GetAllUsers();
+                return BadRequest("Bad credentials");
+            }
 
-                return Ok(users);
-            }
-            catch (NotFoundException)
-            {
-                return StatusCode(StatusCodes.Status404NotFound);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
+            var token = _tokenServices.CreateToken(user);
 
-        [HttpDelete("id")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            try
-            {
-                await _userServices.DeleteUser(id);
-
-                return Ok();
-            }
-            catch (NotFoundException)
-            {
-                return StatusCode(StatusCodes.Status404NotFound);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> UserIsExist(string login)
-        {
-            bool isExist = await _userServices.IsExistUser(login);
-
-            return Ok(isExist);
+            return Ok(token);
         }
     }
 }

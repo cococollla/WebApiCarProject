@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarWebService.DAL.Models.Entity
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : IdentityUserContext<IdentityUser>
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Color> Colors { get; set; }
@@ -17,13 +17,7 @@ namespace CarWebService.DAL.Models.Entity
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Role>().HasData(
-                new Role[]
-                {
-                    new Role { Id = 1, Name = "Admin" },
-                    new Role { Id = 2, Name = "Manager" },
-                    new Role { Id = 3, Name = "User" }
-                });
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Color>().HasData(
                 new Color[]
@@ -41,5 +35,6 @@ namespace CarWebService.DAL.Models.Entity
                     new Brand { Id = 3, Name = "Lexus" }
                 });
         }
+
     }
 }
