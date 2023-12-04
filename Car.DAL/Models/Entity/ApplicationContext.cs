@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarWebService.DAL.Models.Entity
 {
-    public class ApplicationContext : IdentityUserContext<IdentityUser>
+    public class ApplicationContext : IdentityDbContext<User, Role, int>
     {
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Color> Colors { get; set; }
@@ -18,6 +20,17 @@ namespace CarWebService.DAL.Models.Entity
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            AssignAspNetTables(modelBuilder);
+            IgnoreUselessTables(modelBuilder);
+
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role[]
+                {
+                    new Role { Id = 1, Name = "Admin" },
+                    new Role { Id = 2, Name = "Manager" },
+                    new Role { Id = 3, Name = "User" }
+                });
 
             modelBuilder.Entity<Color>().HasData(
                 new Color[]
@@ -36,5 +49,21 @@ namespace CarWebService.DAL.Models.Entity
                 });
         }
 
+        private void IgnoreUselessTables(ModelBuilder builder)
+        {
+            builder.Ignore<IdentityUserClaim<int>>();
+            builder.Ignore<IdentityUserToken<int>>();
+            builder.Ignore<IdentityUserClaim<int>>();
+            builder.Ignore<IdentityUserLogin<int>>();
+            builder.Ignore<IdentityRoleClaim<int>>();
+            builder.Ignore<IdentityUserRole<int>>();
+            builder.Ignore<IdentityRole<int>>();
+        }
+
+        private void AssignAspNetTables(ModelBuilder builder)
+        {
+            builder.Entity<User>().ToTable("Users");
+            builder.Entity<Role>().ToTable("Roles");
+        }
     }
 }

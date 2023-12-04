@@ -1,7 +1,6 @@
-﻿using CarWebService.API.ResourceModels;
-using CarWebService.BLL.Services.Contracts;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using CarWebService.BLL.Services.Contracts;
+using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.DAL.Common.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
@@ -10,81 +9,83 @@ namespace CarWebService.API.Controllers
     [Route("api/[controller]/[action]")]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly ITokenServices _tokenServices;
+        private readonly IUserServices _userServices;
 
-        public UserController(UserManager<IdentityUser> userManager, ITokenServices tokenServices)
+        public UserController(IUserServices userServices)
         {
-            _userManager = userManager;
-            _tokenServices = tokenServices;
+            _userServices = userServices;
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<IActionResult> CreateUser(UserDto user)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                await _userServices.CreateUser(user);
+
+                return Ok();
             }
-
-            var result = await _userManager.CreateAsync(
-                new IdentityUser() { UserName = user.UserName, Email = user.Email },
-                user.Password
-            );
-
-            if (!result.Succeeded)
+            catch (Exception)
             {
-                return BadRequest(result.Errors);
+                return StatusCode(StatusCodes.Status404NotFound);
             }
-
-            user.Password = null;
-            return Created("", user);
         }
 
-        [Authorize]
-        [HttpGet("{username}")]
-        public async Task<ActionResult<User>> GetUser(string username)
+        [HttpGet("id")]
+        public async Task<ActionResult<CarDto>> GetUserById(int id)
         {
-            IdentityUser user = await _userManager.FindByNameAsync(username);
-
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await _userServices.GetUserByid(id);
+
+                return Ok(user);
             }
-
-            return new User
+            catch (NotFoundException)
             {
-                UserName = user.UserName,
-                Email = user.Email
-            };
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
-
-        [HttpPost("BearerToken")]
-        public async Task<ActionResult<AuthenticationResponse>> CreateBearerToken(AuthenticationRequest request)
+        [HttpGet]
+        public async Task<ActionResult<List<CarDto>>> GetUsers()
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest("Bad credentials");
+                var users = await _userServices.GetAllUsers();
+
+                return Ok(users);
             }
-
-            var user = await _userManager.FindByNameAsync(request.UserName);
-
-            if (user == null)
+            catch (NotFoundException)
             {
-                return BadRequest("Bad credentials");
+                return StatusCode(StatusCodes.Status404NotFound);
             }
-
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
-
-            if (!isPasswordValid)
+            catch (Exception)
             {
-                return BadRequest("Bad credentials");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
 
-            var token = _tokenServices.CreateToken(user);
+        [HttpDelete("id")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                await _userServices.DeleteUser(id);
 
-            return Ok(token);
+                return Ok();
+            }
+            catch (NotFoundException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

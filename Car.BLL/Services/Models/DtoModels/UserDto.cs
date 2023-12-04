@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CarWebService.DAL.Models.Entity;
+using System.ComponentModel.DataAnnotations;
 
-namespace CarWebService.API.ResourceModels
+namespace CarWebService.BLL.Services.Models.DtoModels
 {
-    public class User
+    public class UserDto
     {
         [Required]
         public string UserName { get; set; }
@@ -10,5 +11,6 @@ namespace CarWebService.API.ResourceModels
         public string Password { get; set; }
         [Required]
         public string Email { get; set; }
+        public Role Role { get; set; }
     }
 }

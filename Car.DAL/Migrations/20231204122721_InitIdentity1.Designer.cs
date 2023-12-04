@@ -3,6 +3,7 @@ using System;
 using CarWebService.DAL.Models.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarWebService.DAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20231204122721_InitIdentity1")]
+    partial class InitIdentity1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -156,19 +158,19 @@ namespace CarWebService.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "2326798a-7ce0-49f6-b443-2af81c6faf39",
+                            ConcurrencyStamp = "9392ff99-a133-4d43-964d-24746a59f7d2",
                             Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "1d0bd7ee-96ea-4560-b7ed-00d954aa233c",
+                            ConcurrencyStamp = "6f719c80-1147-4566-a813-0a2f828e1e55",
                             Name = "Manager"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "1a93ee8c-6054-4664-9f97-4dc7abdd28ca",
+                            ConcurrencyStamp = "d1366d48-6b07-474b-b79f-5522f93b7ce2",
                             Name = "User"
                         });
                 });
