@@ -43,7 +43,8 @@ builder.Services.AddIdentity<User, Role>(options =>
     options.Password.RequireLowercase = false;
 })
     .AddEntityFrameworkStores<ApplicationContext>()
-    .AddUserManager<UserManager<User>>();
+    .AddUserManager<UserManager<User>>()
+    .AddRoleManager<RoleManager<Role>>();
 
 
 builder.Services

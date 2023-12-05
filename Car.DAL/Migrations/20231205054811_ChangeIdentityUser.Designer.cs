@@ -3,6 +3,7 @@ using System;
 using CarWebService.DAL.Models.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarWebService.DAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20231205054811_ChangeIdentityUser")]
+    partial class ChangeIdentityUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,6 +138,7 @@ namespace CarWebService.DAL.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -155,19 +158,19 @@ namespace CarWebService.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "21940fb5-9b78-4ddc-8899-2f9aa69a0116",
+                            ConcurrencyStamp = "63e1725d-3d0c-4a61-af4f-8713523e9eb4",
                             Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "f039422b-b35a-42fc-9124-08d3b0ac2982",
+                            ConcurrencyStamp = "0686207a-3c06-45b8-8e5b-aeb015aeeb48",
                             Name = "Manager"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "317aa514-2601-4a71-9384-af1ecbe342d8",
+                            ConcurrencyStamp = "d534fe5c-e325-47bb-a0e7-ab5bd1986bd8",
                             Name = "User"
                         });
                 });

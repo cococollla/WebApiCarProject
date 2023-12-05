@@ -2,6 +2,7 @@
 {
     public class CarDto
     {
+        public int Id { get; set; }
         public string YearRelese { get; set; }
         public double Price { get; set; }
         public string? ShorDescription { get; set; }
