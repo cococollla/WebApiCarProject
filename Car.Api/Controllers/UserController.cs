@@ -32,7 +32,7 @@ namespace CarWebService.API.Controllers
             try
             {
                 var user = _mapper.Map<User>(request);
-                user.Role = await _userServices.GetDefaultRole(); //сделать метод для выдачи роли по имени из модели CarDto
+                user.Role = await _roleManager.FindByNameAsync(request.RoleName);
                 var result = await _userManager.CreateAsync(user, user.Password);
 
                 if (!result.Succeeded)
@@ -108,11 +108,10 @@ namespace CarWebService.API.Controllers
                 {
                     throw new NotFoundException("User is not found");
                 }
-                var role = await _roleManager.FindByNameAsync(request.RoleName);
 
                 result.UserName = request.Name;
                 result.Email = request.Email;//email должен быть написан по шаблону [...@...]
-                result.Role = role;
+                result.Role = await _roleManager.FindByNameAsync(request.RoleName);
 
                 var updateResult = await _userManager.UpdateAsync(result);
 

@@ -1,10 +1,9 @@
 ﻿using CarWebService.BLL.Services.Contracts;
-using CarWebService.BLL.Services.Models.ResourceModels;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace CarWebService.BLL.Services.Implementations
@@ -18,50 +17,47 @@ namespace CarWebService.BLL.Services.Implementations
             _configuration = configuration;
         }
 
-        public AuthenticationResponse CreateToken(IdentityUser user)
+        public string CreateToken(string role)
         {
-            var expiration = DateTime.UtcNow.AddMinutes(1);
+            var now = DateTime.UtcNow;
+            var claims = new List<Claim> { new Claim(ClaimTypes.Role, role) };
 
-            var token = CreateJwtToken(
-                CreateClaims(user),
-                CreateSigningCredentials(),
-                expiration
-            );
+            var jwt = new JwtSecurityToken(
+                    issuer: _configuration.GetSection("JWT").GetValue<string>("Issuer"),
+                    audience: _configuration.GetSection("JWT").GetValue<string>("Audience"),
+                    notBefore: now,
+                    claims: claims,
+                    expires: now.Add(TimeSpan.FromSeconds(_configuration.GetValue<double>("Lifetime"))),
+                    signingCredentials: CreateSigningCredentials()
+                    );
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            return new AuthenticationResponse
-            {
-                Token = tokenHandler.WriteToken(token),
-                Expiration = expiration
-            };
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
-        private JwtSecurityToken CreateJwtToken(Claim[] claims, SigningCredentials credentials, DateTime expiration) =>
-            new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Audience"],
-                claims,
-                expires: expiration,
-                signingCredentials: credentials
-            );
+        public static SymmetricSecurityKey GetSymmetricSecurityKey()
+        {
 
-        private Claim[] CreateClaims(IdentityUser user) =>
-            new[] {
-                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+            return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("carsupersecret_secretkey!123"));
+        }
 
-        private SigningCredentials CreateSigningCredentials() =>
-            new SigningCredentials(
-                new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])
-                ),
+        public static SigningCredentials CreateSigningCredentials()
+        {
+            return new SigningCredentials(
+                GetSymmetricSecurityKey(),
                 SecurityAlgorithms.HmacSha256
             );
+        }
+
+        public string CreateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+
+            using (var generator = new RNGCryptoServiceProvider())
+            {
+                generator.GetBytes(randomNumber);
+                string refreshToken = Convert.ToBase64String(randomNumber);
+                return refreshToken;
+            }
+        }
     }
 }
