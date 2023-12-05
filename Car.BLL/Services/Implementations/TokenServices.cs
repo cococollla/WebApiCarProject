@@ -27,7 +27,7 @@ namespace CarWebService.BLL.Services.Implementations
                     audience: _configuration.GetSection("JWT").GetValue<string>("Audience"),
                     notBefore: now,
                     claims: claims,
-                    expires: now.Add(TimeSpan.FromSeconds(_configuration.GetValue<double>("Lifetime"))),
+                    expires: now.Add(TimeSpan.FromSeconds(_configuration.GetSection("JWT").GetValue<double>("Lifetime"))),
                     signingCredentials: CreateSigningCredentials()
                     );
 
@@ -37,7 +37,7 @@ namespace CarWebService.BLL.Services.Implementations
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
 
-            return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("carsupersecret_secretkey!123"));
+            return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("carsupersecretsuper_secretkey!123789"));
         }
 
         public static SigningCredentials CreateSigningCredentials()

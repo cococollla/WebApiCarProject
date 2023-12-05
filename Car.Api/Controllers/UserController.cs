@@ -32,7 +32,7 @@ namespace CarWebService.API.Controllers
             try
             {
                 var user = _mapper.Map<User>(request);
-                user.Role = await _roleManager.FindByNameAsync(request.RoleName);
+                user.Role = await _roleManager.FindByNameAsync(request.RoleName);//тут поле обязательное
                 var result = await _userManager.CreateAsync(user, user.Password);
 
                 if (!result.Succeeded)

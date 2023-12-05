@@ -1,6 +1,7 @@
 ﻿using CarWebService.BLL.Services.Contracts;
 using CarWebService.BLL.Services.Models.DtoModels;
 using CarWebService.DAL.Common.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
@@ -16,6 +17,7 @@ namespace CarWebService.API.Controllers
             _carServices = carServices;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCar(CarDto carDto)
         {

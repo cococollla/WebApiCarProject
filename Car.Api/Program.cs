@@ -1,3 +1,4 @@
+using CarWebService.API.Middlewares;
 using CarWebService.BLL.Services.Contracts;
 using CarWebService.BLL.Services.Implementations;
 using CarWebService.DAL.Models.Entity;
@@ -16,7 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
-builder.Services.AddScoped<ITokenServices, TokenServices>();
+builder.Services.AddSingleton<ITokenServices, TokenServices>();
 builder.Services.AddScoped<ICarServices, CarServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
@@ -77,9 +78,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
 
     });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("Manager", policy => policy.RequireRole("Manager"));
+    options.AddPolicy("User", policy => policy.RequireRole("User"));
+});
 
 var app = builder.Build();
 
+app.UseMiddleware<JwtRefreshTokenMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI(config =>
 {
@@ -89,6 +97,7 @@ app.UseSwaggerUI(config =>
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.MapControllers();
+app.UseMiddleware<JwtAccessTokenMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.Run();

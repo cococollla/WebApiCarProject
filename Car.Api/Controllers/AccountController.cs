@@ -14,62 +14,68 @@ namespace CarWebService.API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly IUserServices _userService;
         private readonly ITokenServices _tokenServices;
         private readonly IMapper _mapper;
 
-        public AccountController(UserManager<User> userManager, IUserServices userService, SignInManager<User> signInManager, IMapper mapper, ITokenServices tokenServices)
+        public AccountController(UserManager<User> userManager, IUserServices userService, SignInManager<User> signInManager, IMapper mapper, ITokenServices tokenServices, RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _userService = userService;
             _signInManager = signInManager;
             _mapper = mapper;
             _tokenServices = tokenServices;
+            _roleManager = roleManager;
         }
 
-        private async Task<AuthResponse> GetToken(string email)
+        private ActionResult<string> GetToken()
         {
-            var user = await _userManager.FindByEmailAsync(email);//Поиск роли для дальнейшего добавления в Clims
-            var token = _tokenServices.CreateToken(user.Role.Name);
+            var token = _tokenServices.CreateToken("Admin");
             var refreshToken = _tokenServices.CreateRefreshToken();
 
-            var cookieOptions = new CookieOptions //добавление refreshToken в куки на неделю
+            var cookieForRefrshToken = new CookieOptions //добавление refreshToken в куки на неделю
             {
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(7),
             };
-            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+            Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
+
+            var cookieForAccessToken = new CookieOptions //добавление accessToken в куки на неделю
+            {
+                HttpOnly = true,
+            };
+            Response.Cookies.Append("refreshToken", refreshToken, cookieForAccessToken);
 
             var response = new AuthResponse
             {
-                Role = user.Role.Name,
+                Role = "Admin",
                 AccessToken = token,
                 RefreshToken = refreshToken
             };
 
-            return response;
+            return refreshToken;
         }
 
         [HttpGet]
-        public async Task<IResult> Login(UserDto request)
+        public async Task<ActionResult<string>> Login(UserDto request)
         {
-            var user = _mapper.Map<User>(request);
-            var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, true, false);
+            var user = await _userManager.FindByEmailAsync(request.Email);
 
-            if (!result.Succeeded)
+            if (user == null)
             {
-                return Results.BadRequest("Incorrect email or password");
+                return NotFound();
             }
 
-            var response = GetToken(user.Email);
+            var response = GetToken();
 
-            return Results.Json(response);
+            return Ok(response);
 
 
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserDto>> Signup(UserDto request)
+        public async Task<ActionResult<User>> Signup(UserDto request)
         {
 
             var user = _mapper.Map<User>(request);
