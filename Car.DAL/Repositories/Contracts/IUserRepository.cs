@@ -10,6 +10,7 @@ namespace CarWebService.DAL.Repositories.Contracts
         public Task DeleteUser(int id);
         public Task<List<Role>> GetRoles();
         public Task<Role> GetDefaultRole();
+        public Task<Role> GetRoleByName(string name);
         public Task<User> GetExistingUser(string email, string password);
     }
 }

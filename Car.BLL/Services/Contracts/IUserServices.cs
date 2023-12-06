@@ -10,6 +10,7 @@ namespace CarWebService.BLL.Services.Contracts
         public Task<UserDto> GetUserByid(int id);
         public Task DeleteUser(int id);
         public Task<Role> GetDefaultRole();
+        public Task<Role> GetRoleByName(string name);
         public Task<User> GetExistingUser(string email, string password);
     }
 }

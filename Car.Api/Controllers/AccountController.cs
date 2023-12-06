@@ -14,16 +14,14 @@ namespace CarWebService.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
         private readonly IUserServices _userService;
         private readonly ITokenServices _tokenServices;
         private readonly IMapper _mapper;
 
-        public AccountController(UserManager<User> userManager, IUserServices userService, SignInManager<User> signInManager, IMapper mapper, ITokenServices tokenServices)
+        public AccountController(UserManager<User> userManager, IUserServices userService, IMapper mapper, ITokenServices tokenServices)
         {
             _userManager = userManager;
             _userService = userService;
-            _signInManager = signInManager;
             _mapper = mapper;
             _tokenServices = tokenServices;
         }
@@ -40,7 +38,7 @@ namespace CarWebService.API.Controllers
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
 
-            var cookieForAccessToken = new CookieOptions //добавление accessToken
+            var cookieForAccessToken = new CookieOptions //добавление accessToken в куки
             {
                 HttpOnly = true,
             };
@@ -91,7 +89,7 @@ namespace CarWebService.API.Controllers
                 return BadRequest(result.Errors);
             }
 
-            return Created($"/api/User/GetUserById/{user.Id}", user);
+            return Ok(Url.Action(nameof(Login)));
         }
     }
 }

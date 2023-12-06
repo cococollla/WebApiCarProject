@@ -98,6 +98,18 @@ namespace CarWebService.DAL.Repositories.Implementations
             return role;
         }
 
+        public async Task<Role> GetRoleByName(string name)
+        {
+            var role = await _context.Roles.FirstOrDefaultAsync(role => role.Name == name);
+
+            if (role == null)
+            {
+                return await _context.Roles.FirstOrDefaultAsync(role => role.Name == "User");
+            }
+
+            return role;
+        }
+
         public async Task<User> GetExistingUser(string email, string password)
         {
             var user = _context.Users.Include(u => u.Role).FirstOrDefault(user => user.Email == email && user.Password == password);

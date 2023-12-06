@@ -16,14 +16,12 @@ namespace CarWebService.API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IUserServices _userServices;
-        private readonly RoleManager<Role> _roleManager;
 
-        public UserController(UserManager<User> userManager, IMapper mapper, IUserServices userServices, RoleManager<Role> roleManager)
+        public UserController(UserManager<User> userManager, IMapper mapper, IUserServices userServices)
         {
             _userManager = userManager;
             _mapper = mapper;
             _userServices = userServices;
-            _roleManager = roleManager;
         }
 
         [HttpPost]
@@ -32,7 +30,7 @@ namespace CarWebService.API.Controllers
             try
             {
                 var user = _mapper.Map<User>(request);
-                user.Role = await _roleManager.FindByNameAsync(request.RoleName);//тут поле обязательное
+                user.Role = await _userServices.GetDefaultRole();
                 var result = await _userManager.CreateAsync(user, user.Password);
 
                 if (!result.Succeeded)
@@ -40,7 +38,7 @@ namespace CarWebService.API.Controllers
                     throw new Exception();
                 }
 
-                return Created($"/api/User/GetUserById/{user.Id}", user);
+                return Created($"{user.Id}", Url.Action(nameof(GetUserById), new { id = user.Id }));
             }
             catch (Exception)
             {
@@ -48,7 +46,7 @@ namespace CarWebService.API.Controllers
             }
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUserById(string id)
         {
             try
@@ -73,18 +71,19 @@ namespace CarWebService.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetUsers()
+        public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
             try
             {
-                var users = _mapper.Map<List<UserDto>>(_userManager.Users);
+                var users = await _userServices.GetAllUsers();
 
                 if (users == null)
                 {
                     throw new NotFoundException("Not found");
                 }
 
-                return Ok(users);
+                var usersDto = _mapper.Map<List<UserDto>>(users);
+                return Ok(usersDto);
             }
             catch (NotFoundException)
             {
@@ -111,7 +110,7 @@ namespace CarWebService.API.Controllers
 
                 result.UserName = request.Name;
                 result.Email = request.Email;//email должен быть написан по шаблону [...@...]
-                result.Role = await _roleManager.FindByNameAsync(request.RoleName);
+                result.Role = await _userServices.GetRoleByName(request.RoleName);
 
                 var updateResult = await _userManager.UpdateAsync(result);
 
@@ -127,7 +126,7 @@ namespace CarWebService.API.Controllers
             }
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             try
@@ -139,8 +138,8 @@ namespace CarWebService.API.Controllers
                     throw new NotFoundException("User is not found");
                 }
 
-                await _userManager.DeleteAsync(user); //DeleteAsync userManger принимает модель User, поэтому приходится сначала найти пользователя по id
-                                                      //Есть сымыс использовать метод репозитория
+                await _userManager.DeleteAsync(user); //DeleteAsync userManger принимает объект User, поэтому приходится сначала найти пользователя по id
+                                                      //Есть смысл использовать метод репозитория
 
                 return Ok();
             }
