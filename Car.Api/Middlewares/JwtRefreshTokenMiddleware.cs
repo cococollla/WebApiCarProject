@@ -19,7 +19,7 @@ namespace CarWebService.API.Middlewares
 
             if (context.Response.Headers.ContainsKey("IS-TOKEN-EXPIRED"))
             {
-                var loginPath = "/api/Account/Authenticate";
+                const string loginPath = "/api/Account/Authenticate";
                 var headerValue = context.Response.Headers["IS-TOKEN-EXPIRED"];
 
                 if (headerValue == "true")

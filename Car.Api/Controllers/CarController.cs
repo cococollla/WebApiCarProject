@@ -26,7 +26,7 @@ namespace CarWebService.API.Controllers
                 var carId = await _carServices.AddCar(carDto);
                 //ResponseHeaderHelper.AddToResponseHeader(HttpContext, carId);
 
-                return Created($"api/Car/GetCarById/{carId}", carId);
+                return Created($"{carId}", Url.Action(nameof(GetCarById), new { id = carId }));
             }
             catch (Exception ex)
             {
@@ -53,7 +53,7 @@ namespace CarWebService.API.Controllers
             }
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<CarDto>> GetCarById(int id)
         {
             try
@@ -91,7 +91,7 @@ namespace CarWebService.API.Controllers
             }
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCar(int id)
         {
             try

@@ -32,7 +32,7 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin();
     });
 });
-builder.Services.AddIdentity<User, Role>(options =>
+builder.Services.AddIdentityCore<User>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
     options.SignIn.RequireConfirmedEmail = false;
@@ -46,7 +46,6 @@ builder.Services.AddIdentity<User, Role>(options =>
 })
     .AddEntityFrameworkStores<ApplicationContext>()
     .AddUserManager<UserManager<User>>()
-    .AddRoleManager<RoleManager<Role>>()
     .AddSignInManager<SignInManager<User>>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -80,12 +79,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
 
     });
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("Manager", policy => policy.RequireRole("Manager"));
-    options.AddPolicy("User", policy => policy.RequireRole("User"));
-});
 
 var app = builder.Build();
 

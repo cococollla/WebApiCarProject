@@ -22,7 +22,7 @@ namespace CarWebService.API.Middlewares
 
                 if (accessToken != null)
                 {
-                    context.Request.Headers.Add("Authorization", "Bearer " + accessToken);
+                    context.Request.Headers.Authorization = $"Bearer {accessToken}";
                 }
             }
 

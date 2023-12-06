@@ -15,19 +15,17 @@ namespace CarWebService.API.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<Role> _roleManager;
         private readonly IUserServices _userService;
         private readonly ITokenServices _tokenServices;
         private readonly IMapper _mapper;
 
-        public AccountController(UserManager<User> userManager, IUserServices userService, SignInManager<User> signInManager, IMapper mapper, ITokenServices tokenServices, RoleManager<Role> roleManager)
+        public AccountController(UserManager<User> userManager, IUserServices userService, SignInManager<User> signInManager, IMapper mapper, ITokenServices tokenServices)
         {
             _userManager = userManager;
             _userService = userService;
             _signInManager = signInManager;
             _mapper = mapper;
             _tokenServices = tokenServices;
-            _roleManager = roleManager;
         }
 
         private AuthResponse GetToken(string role)
