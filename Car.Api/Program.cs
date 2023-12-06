@@ -22,7 +22,7 @@ builder.Services.AddScoped<ICarServices, CarServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -34,7 +34,9 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddIdentity<User, Role>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
     options.User.RequireUniqueEmail = true;
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
@@ -88,12 +90,12 @@ builder.Services.AddAuthorization(options =>
 var app = builder.Build();
 
 app.UseMiddleware<JwtRefreshTokenMiddleware>();
-app.UseSwagger();
-app.UseSwaggerUI(config =>
-{
-    config.RoutePrefix = string.Empty;
-    config.SwaggerEndpoint("swagger/v1/swagger.json", "Car API");
-});
+//app.UseSwagger();
+//app.UseSwaggerUI(config =>
+//{
+//    config.RoutePrefix = string.Empty;
+//    config.SwaggerEndpoint("swagger/v1/swagger.json", "Car API");
+//});
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.MapControllers();

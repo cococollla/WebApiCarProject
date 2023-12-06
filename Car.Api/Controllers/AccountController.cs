@@ -2,6 +2,7 @@
 using CarWebService.API.Models;
 using CarWebService.BLL.Services.Contracts;
 using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.DAL.Common.Exceptions;
 using CarWebService.DAL.Models.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +30,9 @@ namespace CarWebService.API.Controllers
             _roleManager = roleManager;
         }
 
-        private ActionResult<string> GetToken()
+        private AuthResponse GetToken(string role)
         {
-            var token = _tokenServices.CreateToken("Admin");
+            var token = _tokenServices.CreateToken(role);
             var refreshToken = _tokenServices.CreateRefreshToken();
 
             var cookieForRefrshToken = new CookieOptions //добавление refreshToken в куки на неделю
@@ -41,35 +42,40 @@ namespace CarWebService.API.Controllers
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
 
-            var cookieForAccessToken = new CookieOptions //добавление accessToken в куки на неделю
+            var cookieForAccessToken = new CookieOptions //добавление accessToken
             {
                 HttpOnly = true,
             };
-            Response.Cookies.Append("refreshToken", refreshToken, cookieForAccessToken);
+            Response.Cookies.Append("accessToken", token, cookieForAccessToken);
 
             var response = new AuthResponse
             {
-                Role = "Admin",
+                Role = role,
                 AccessToken = token,
                 RefreshToken = refreshToken
             };
 
-            return refreshToken;
+            return response;
         }
 
         [HttpGet]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<IResult> Login(UserDto request)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
-
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await _userService.GetExistingUser(request.Email, request.Password);
+                var response = GetToken(user.Role.Name);
+
+                return Results.Json(response);
             }
-
-            var response = GetToken();
-
-            return Ok(response);
+            catch (NotFoundException)
+            {
+                return Results.StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (Exception)
+            {
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
 
         }
@@ -80,7 +86,7 @@ namespace CarWebService.API.Controllers
 
             var user = _mapper.Map<User>(request);
             user.Role = await _userService.GetDefaultRole();
-            var result = await _userManager.CreateAsync(user);
+            var result = await _userManager.CreateAsync(user, user.Password);
 
             if (!result.Succeeded)
             {

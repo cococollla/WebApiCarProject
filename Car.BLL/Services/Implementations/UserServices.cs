@@ -49,5 +49,12 @@ namespace CarWebService.BLL.Services.Implementations
             var role = await _userRepository.GetDefaultRole();
             return role;
         }
+
+        public async Task<User> GetExistingUser(string email, string password)
+        {
+            var user = await _userRepository.GetExistingUser(email, password);
+
+            return user;
+        }
     }
 }

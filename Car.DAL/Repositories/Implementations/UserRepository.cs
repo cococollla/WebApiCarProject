@@ -97,5 +97,17 @@ namespace CarWebService.DAL.Repositories.Implementations
 
             return role;
         }
+
+        public async Task<User> GetExistingUser(string email, string password)
+        {
+            var user = _context.Users.Include(u => u.Role).FirstOrDefault(user => user.Email == email && user.Password == password);
+
+            if (user == null)
+            {
+                throw new NotFoundException("User is not found");
+            }
+
+            return user;
+        }
     }
 }
