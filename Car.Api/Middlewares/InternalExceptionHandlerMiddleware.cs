@@ -19,6 +19,15 @@ namespace CarWebService.API.Middlewares
             {
                 await _next(context);
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                var logMessage = $"Unauthorized access occurred in {context.Request.Method} {context.Request.Path}: {ex.Message}";
+                _logger.Error(logMessage, ex);
+
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("Unauthorized error");
+
+            }
             catch (Exception ex)
             {
                 var logMessage = $"An unhandled exception occurred in {context.Request.Method} {context.Request.Path}: {ex.Message}";
