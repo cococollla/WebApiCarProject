@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using Microsoft.IdentityModel.Tokens;
+using NLog;
 
 namespace CarWebService.API.Middlewares
 {
@@ -27,6 +28,14 @@ namespace CarWebService.API.Middlewares
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsync("Unauthorized error");
 
+            }
+            catch (SecurityTokenValidationException ex)
+            {
+                var logMessage = $"Forbidden access occurred in {context.Request.Method} {context.Request.Path}: {ex.Message}";
+                _logger.Error(logMessage, ex);
+
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("Forbidden error");
             }
             catch (Exception ex)
             {

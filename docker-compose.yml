@@ -22,7 +22,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: CarDb   
+      POSTGRES_DB: CarApiDb   
     ports:
       - "5432:5432"    
     networks:
