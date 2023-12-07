@@ -13,7 +13,7 @@ namespace CarWebService.BLL.Profiles
                 .ForMember(dest => dest.ColorId, opt => opt.MapFrom(carDto => carDto.ColorId))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(carDto => carDto.Price))
                 .ForMember(dest => dest.YearRelese, opt => opt.MapFrom(carDto => carDto.YearRelese))
-                .ForMember(dest => dest.ShorDescription, opt => opt.MapFrom(carDto => carDto.ShorDescription));
+                .ForMember(dest => dest.ShorDescription, opt => opt.MapFrom(carDto => carDto.ShorDescription)).ReverseMap();
         }
     }
 }

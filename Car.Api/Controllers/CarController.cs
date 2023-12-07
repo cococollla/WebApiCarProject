@@ -21,17 +21,12 @@ namespace CarWebService.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCar(CarDto carDto)
         {
-            try
-            {
-                var carId = await _carServices.AddCar(carDto);
-                //ResponseHeaderHelper.AddToResponseHeader(HttpContext, carId);
 
-                return Created($"{carId}", Url.Action(nameof(GetCarById), new { id = carId }));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status404NotFound, ex.Message);
-            }
+            var carId = await _carServices.AddCar(carDto);
+            //ResponseHeaderHelper.AddToResponseHeader(HttpContext, carId);
+
+            return Created($"{carId}", Url.Action(nameof(GetCarById), new { id = carId }));
+
         }
 
         [HttpPut]
@@ -46,10 +41,6 @@ namespace CarWebService.API.Controllers
             catch (NotFoundException)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -66,10 +57,6 @@ namespace CarWebService.API.Controllers
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
         }
 
         [HttpGet]
@@ -85,10 +72,6 @@ namespace CarWebService.API.Controllers
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
         }
 
         [HttpDelete("{id}")]
@@ -103,10 +86,6 @@ namespace CarWebService.API.Controllers
             catch (NotFoundException)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }

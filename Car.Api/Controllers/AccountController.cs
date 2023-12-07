@@ -26,6 +26,11 @@ namespace CarWebService.API.Controllers
             _tokenServices = tokenServices;
         }
 
+        /// <summary>
+        /// Выдает токен для аутентифицированного пользователя
+        /// </summary>
+        /// <param name="role">Роль пользователя</param>
+        /// <returns>AccessToken, RefreshToken, Role</returns>
         private AuthResponse GetToken(string role)
         {
             var token = _tokenServices.CreateToken(role);
@@ -44,6 +49,12 @@ namespace CarWebService.API.Controllers
             };
             Response.Cookies.Append("accessToken", token, cookieForAccessToken);
 
+            var cookieForRole = new CookieOptions //добавление роль в куки
+            {
+                HttpOnly = true,
+            };
+            Response.Cookies.Append("role", role, cookieForRole);
+
             var response = new AuthResponse
             {
                 Role = role,
@@ -54,6 +65,10 @@ namespace CarWebService.API.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Реализует вход в приложение
+        /// </summary>
+        /// <param name="request">Данные для входа</param>
         [HttpGet]
         public async Task<IResult> Login(UserDto request)
         {
@@ -76,6 +91,10 @@ namespace CarWebService.API.Controllers
 
         }
 
+        /// <summary>
+        /// Регистрация пользователя
+        /// </summary>
+        /// <param name="request">Данные пользователя для регистрации</param>
         [HttpPost]
         public async Task<ActionResult<User>> Signup(UserDto request)
         {

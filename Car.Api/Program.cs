@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -16,13 +17,15 @@ var jwtSettings = builder.Configuration.GetSection("JWT");
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
 builder.Services.AddSingleton<ITokenServices, TokenServices>();
 builder.Services.AddScoped<ICarServices, CarServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -80,15 +83,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
     });
 
+
 var app = builder.Build();
 
+app.UseMiddleware<InternalExceptionHandlerMiddleware>();
 app.UseMiddleware<JwtRefreshTokenMiddleware>();
-//app.UseSwagger();
-//app.UseSwaggerUI(config =>
-//{
-//    config.RoutePrefix = string.Empty;
-//    config.SwaggerEndpoint("swagger/v1/swagger.json", "Car API");
-//});
+app.UseSwagger();
+app.UseSwaggerUI(config =>
+{
+    config.RoutePrefix = string.Empty;
+    config.SwaggerEndpoint("swagger/v1/swagger.json", "Car API");
+});
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.MapControllers();

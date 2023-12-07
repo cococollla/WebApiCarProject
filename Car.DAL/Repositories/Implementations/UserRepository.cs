@@ -98,6 +98,11 @@ namespace CarWebService.DAL.Repositories.Implementations
             return role;
         }
 
+        /// <summary>
+        /// Получает роль по ее имени
+        /// </summary>
+        /// <param name="name">Имя роли</param>
+        /// <returns>Роль</returns>
         public async Task<Role> GetRoleByName(string name)
         {
             var role = await _context.Roles.FirstOrDefaultAsync(role => role.Name == name);
@@ -110,6 +115,13 @@ namespace CarWebService.DAL.Repositories.Implementations
             return role;
         }
 
+        /// <summary>
+        /// Получает пользователя по его имейлу и паролю
+        /// </summary>
+        /// <param name="email">Почта пользователя</param>
+        /// <param name="password">Пароль пользователя</param>
+        /// <returns>Пользователь</returns>
+        /// <exception cref="NotFoundException"></exception>
         public async Task<User> GetExistingUser(string email, string password)
         {
             var user = _context.Users.Include(u => u.Role).FirstOrDefault(user => user.Email == email && user.Password == password);

@@ -27,23 +27,19 @@ namespace CarWebService.API.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(UserDto request)
         {
-            try
-            {
-                var user = _mapper.Map<User>(request);
-                user.Role = await _userServices.GetDefaultRole();
-                var result = await _userManager.CreateAsync(user, user.Password);
 
-                if (!result.Succeeded)
-                {
-                    throw new Exception();
-                }
+            var user = _mapper.Map<User>(request);
+            user.Role = await _userServices.GetDefaultRole();
+            var result = await _userManager.CreateAsync(user, user.Password);
 
-                return Created($"{user.Id}", Url.Action(nameof(GetUserById), new { id = user.Id }));
-            }
-            catch (Exception)
+            if (!result.Succeeded)
             {
-                return StatusCode(StatusCodes.Status404NotFound);
+                throw new Exception();
             }
+
+            return Created($"{user.Id}", Url.Action(nameof(GetUserById), new { id = user.Id }));
+
+
         }
 
         [HttpGet("{id}")]
@@ -63,10 +59,6 @@ namespace CarWebService.API.Controllers
             catch (NotFoundException)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -88,10 +80,6 @@ namespace CarWebService.API.Controllers
             catch (NotFoundException)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -120,10 +108,6 @@ namespace CarWebService.API.Controllers
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
         }
 
         [HttpDelete("{id}")]
@@ -146,10 +130,6 @@ namespace CarWebService.API.Controllers
             catch (NotFoundException)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }
