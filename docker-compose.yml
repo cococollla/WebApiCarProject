@@ -24,10 +24,11 @@ services:
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: CarApiDb   
     ports:
-      - "5432:5432"    
+      - "5445:5445"    
     networks:
       - deploy-apicar
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    command: -p 5445
 volumes:
   postgres-data:

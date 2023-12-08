@@ -34,7 +34,7 @@ namespace CarWebService.API.Middlewares
                 var logMessage = $"Forbidden access occurred in {context.Request.Method} {context.Request.Path}: {ex.Message}";
                 _logger.Error(logMessage, ex);
 
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 await context.Response.WriteAsync("Forbidden error");
             }
             catch (Exception ex)
