@@ -1,7 +1,8 @@
-﻿using CarWebService.BLL.Services.Contracts;
+﻿using AutoMapper;
+using CarWebService.BLL.Services.Contracts;
 using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.BLL.Services.Models.View;
 using CarWebService.DAL.Common.Exceptions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
@@ -11,13 +12,14 @@ namespace CarWebService.API.Controllers
     public class CarController : ControllerBase
     {
         private readonly ICarServices _carServices;
+        private readonly IMapper _mapper;
 
-        public CarController(ICarServices carServices)
+        public CarController(ICarServices carServices, IMapper mapper)
         {
             _carServices = carServices;
+            _mapper = mapper;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCar(CarDto carDto)
         {
@@ -60,7 +62,7 @@ namespace CarWebService.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CarDto>>> GetCars()
+        public async Task<ActionResult<List<CarVm>>> GetCars()
         {
             try
             {

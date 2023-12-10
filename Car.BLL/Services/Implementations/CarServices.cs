@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CarWebService.BLL.Services.Contracts;
 using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.BLL.Services.Models.View;
 using CarWebService.DAL.Models.Entity;
 using CarWebService.DAL.Repositories.Contracts;
 
@@ -30,18 +31,18 @@ namespace CarWebService.BLL.Services.Implementations
             await _carRepository.DeleteCar(id);
         }
 
-        public async Task<List<CarDto>> GetAllCars()
+        public async Task<List<CarVm>> GetAllCars()
         {
             var cars = await _carRepository.GetAllCars();
-            var carsDto = _mapper.Map<List<CarDto>>(cars);
+            var carsDto = _mapper.Map<List<CarVm>>(cars);
 
             return carsDto;
         }
 
-        public async Task<CarDto> GetCarById(int id)
+        public async Task<CarVm> GetCarById(int id)
         {
             var car = await _carRepository.GetCarById(id);
-            var carDto = _mapper.Map<CarDto>(car);
+            var carDto = _mapper.Map<CarVm>(car);
 
             return carDto;
         }
