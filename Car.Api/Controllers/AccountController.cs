@@ -70,7 +70,7 @@ namespace CarWebService.API.Controllers
         /// </summary>
         /// <param name="request">Данные для входа</param>
         [HttpPost]
-        public async Task<IResult> Login([FromForm] AuthRequest request)
+        public async Task<IResult> Login(AuthRequest request)
         {
             try
             {
