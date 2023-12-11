@@ -69,8 +69,8 @@ namespace CarWebService.API.Controllers
         /// Реализует вход в приложение
         /// </summary>
         /// <param name="request">Данные для входа</param>
-        [HttpGet]
-        public async Task<IResult> Login(UserDto request)
+        [HttpPost]
+        public async Task<IResult> Login([FromForm] AuthRequest request)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace CarWebService.API.Controllers
         /// </summary>
         /// <param name="request">Данные пользователя для регистрации</param>
         [HttpPost]
-        public async Task<ActionResult<User>> Signup(UserDto request)
+        public async Task<ActionResult<User>> Signup([FromForm] UserDto request)
         {
 
             var user = _mapper.Map<User>(request);
