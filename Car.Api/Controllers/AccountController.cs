@@ -43,18 +43,6 @@ namespace CarWebService.API.Controllers
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
 
-            var cookieForAccessToken = new CookieOptions //добавление accessToken в куки
-            {
-                HttpOnly = true,
-            };
-            Response.Cookies.Append("accessToken", token, cookieForAccessToken);
-
-            var cookieForRole = new CookieOptions //добавление роль в куки
-            {
-                HttpOnly = true,
-            };
-            Response.Cookies.Append("role", role, cookieForRole);
-
             var response = new AuthResponse
             {
                 Role = role,
@@ -87,8 +75,6 @@ namespace CarWebService.API.Controllers
             {
                 return Results.StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-
         }
 
         /// <summary>
@@ -98,7 +84,6 @@ namespace CarWebService.API.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> Signup([FromForm] UserDto request)
         {
-
             var user = _mapper.Map<User>(request);
             user.Role = await _userService.GetDefaultRole();
             var result = await _userManager.CreateAsync(user, user.Password);

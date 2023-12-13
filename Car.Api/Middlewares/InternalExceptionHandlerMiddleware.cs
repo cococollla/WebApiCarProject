@@ -27,7 +27,6 @@ namespace CarWebService.API.Middlewares
 
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsync("Unauthorized error");
-
             }
             catch (SecurityTokenValidationException ex)
             {

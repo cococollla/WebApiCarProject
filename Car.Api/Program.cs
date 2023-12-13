@@ -50,7 +50,6 @@ builder.Services.AddIdentityCore<User>(options =>
     .AddEntityFrameworkStores<ApplicationContext>()
     .AddUserManager<UserManager<User>>()
     .AddSignInManager<SignInManager<User>>();
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

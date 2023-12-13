@@ -3,6 +3,7 @@ using CarWebService.BLL.Services.Contracts;
 using CarWebService.BLL.Services.Models.DtoModels;
 using CarWebService.BLL.Services.Models.View;
 using CarWebService.DAL.Common.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
@@ -23,12 +24,9 @@ namespace CarWebService.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCar(CarDto carDto)
         {
-
             var carId = await _carServices.AddCar(carDto);
-            //ResponseHeaderHelper.AddToResponseHeader(HttpContext, carId);
 
             return Created($"{carId}", Url.Action(nameof(GetCarById), new { id = carId }));
-
         }
 
         [HttpPut]
@@ -61,6 +59,7 @@ namespace CarWebService.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpGet]
         public async Task<ActionResult<List<CarVm>>> GetCars()
         {

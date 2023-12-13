@@ -27,7 +27,6 @@ namespace CarWebService.API.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(UserDto request)
         {
-
             var user = _mapper.Map<User>(request);
             user.Role = await _userServices.GetDefaultRole();
             var result = await _userManager.CreateAsync(user, user.Password);
@@ -38,8 +37,6 @@ namespace CarWebService.API.Controllers
             }
 
             return Created($"{user.Id}", Url.Action(nameof(GetUserById), new { id = user.Id }));
-
-
         }
 
         [HttpGet("{id}")]
@@ -75,6 +72,7 @@ namespace CarWebService.API.Controllers
                 }
 
                 var usersDto = _mapper.Map<List<UserDto>>(users);
+
                 return Ok(usersDto);
             }
             catch (NotFoundException)
@@ -123,7 +121,6 @@ namespace CarWebService.API.Controllers
                 }
 
                 await _userManager.DeleteAsync(user); //DeleteAsync userManger принимает объект User, поэтому приходится сначала найти пользователя по id
-                                                      //Есть смысл использовать метод репозитория
 
                 return Ok();
             }

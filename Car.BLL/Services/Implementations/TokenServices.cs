@@ -36,7 +36,6 @@ namespace CarWebService.BLL.Services.Implementations
 
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
-
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("carsupersecretsuper_secretkey!123789"));
         }
 

@@ -14,7 +14,6 @@ namespace CarWebService.DAL.Repositories.Implementations
             _context = context;
         }
 
-
         /// <summary>
         /// Добавляет пользователя в БД
         /// </summary>
