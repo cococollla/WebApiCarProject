@@ -87,6 +87,7 @@ var app = builder.Build();
 
 app.UseMiddleware<InternalExceptionHandlerMiddleware>();
 app.UseMiddleware<JwtRefreshTokenMiddleware>();
+app.UseMiddleware<JwtAccessTokenMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI(config =>
 {
@@ -96,7 +97,6 @@ app.UseSwaggerUI(config =>
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.MapControllers();
-app.UseMiddleware<JwtAccessTokenMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.Run();

@@ -59,7 +59,7 @@ namespace CarWebService.API.Controllers
             }
         }
 
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<List<CarVm>>> GetCars()
         {

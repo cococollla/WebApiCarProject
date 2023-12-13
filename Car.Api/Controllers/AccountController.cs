@@ -43,6 +43,18 @@ namespace CarWebService.API.Controllers
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
 
+            var cookieForAccessToken = new CookieOptions //добавление accessToken в куки
+            {
+                HttpOnly = true,
+            };
+            Response.Cookies.Append("accessToken", token, cookieForAccessToken);
+
+            var cookieForRole = new CookieOptions //добавление роль в куки
+            {
+                HttpOnly = true,
+            };
+            Response.Cookies.Append("role", role, cookieForRole);
+
             var response = new AuthResponse
             {
                 Role = role,
