@@ -40,20 +40,9 @@ namespace CarWebService.API.Controllers
             {
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(7),
+                SameSite = SameSiteMode.None
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
-
-            var cookieForAccessToken = new CookieOptions //добавление accessToken в куки
-            {
-                HttpOnly = true,
-            };
-            Response.Cookies.Append("accessToken", token, cookieForAccessToken);
-
-            var cookieForRole = new CookieOptions //добавление роль в куки
-            {
-                HttpOnly = true,
-            };
-            Response.Cookies.Append("role", role, cookieForRole);
 
             var response = new AuthResponse
             {
