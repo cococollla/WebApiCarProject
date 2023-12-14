@@ -39,8 +39,9 @@ namespace CarWebService.API.Controllers
             var cookieForRefrshToken = new CookieOptions //добавление refreshToken в куки на неделю
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7),
-                SameSite = SameSiteMode.None
+                Expires = DateTime.UtcNow.AddMinutes(1),
+                SameSite = SameSiteMode.None,
+                Secure = true
             };
             Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
 

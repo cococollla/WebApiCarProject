@@ -30,9 +30,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
+        policy.WithOrigins("http://127.0.0.1:5500");
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
-        policy.AllowAnyOrigin();
+        policy.AllowCredentials();
     });
 });
 builder.Services.AddIdentityCore<User>(options =>

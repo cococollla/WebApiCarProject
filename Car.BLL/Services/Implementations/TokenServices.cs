@@ -27,7 +27,7 @@ namespace CarWebService.BLL.Services.Implementations
                     audience: _configuration.GetSection("JWT").GetValue<string>("Audience"),
                     notBefore: now,
                     claims: claims,
-                    expires: now.Add(TimeSpan.FromMinutes(_configuration.GetSection("JWT").GetValue<double>("Lifetime"))),
+                    expires: now.Add(TimeSpan.FromSeconds(_configuration.GetSection("JWT").GetValue<double>("Lifetime"))),
                     signingCredentials: CreateSigningCredentials()
                     );
 
