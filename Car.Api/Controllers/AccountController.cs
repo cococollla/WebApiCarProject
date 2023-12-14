@@ -71,7 +71,8 @@ namespace CarWebService.API.Controllers
             }
             catch (NotFoundException)
             {
-                return Results.StatusCode(StatusCodes.Status404NotFound);
+                Response.StatusCode = StatusCodes.Status404NotFound;
+                return Results.NotFound();
             }
             catch (Exception)
             {

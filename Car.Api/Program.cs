@@ -34,6 +34,7 @@ builder.Services.AddCors(options =>
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
         policy.AllowCredentials();
+        policy.WithExposedHeaders("IS-REFRESHTOKEN-EXPIRED");
     });
 });
 builder.Services.AddIdentityCore<User>(options =>
@@ -88,7 +89,6 @@ var app = builder.Build();
 
 app.UseMiddleware<InternalExceptionHandlerMiddleware>();
 app.UseMiddleware<JwtRefreshTokenMiddleware>();
-app.UseMiddleware<JwtAccessTokenMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI(config =>
 {

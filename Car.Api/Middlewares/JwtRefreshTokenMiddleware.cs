@@ -19,20 +19,17 @@ namespace CarWebService.API.Middlewares
 
             if (context.Response.Headers.ContainsKey("IS-TOKEN-EXPIRED"))
             {
-                const string loginPath = "/api/Account/Login";
                 var headerValue = context.Response.Headers["IS-TOKEN-EXPIRED"];
 
                 if (headerValue == "true")
                 {
-                    var path = context.Request.Path;
                     context.Request.Headers.Remove("Authorization");
                     string? refreshToken = context.Request.Cookies["refreshToken"];
                     string? role = context.Request.Cookies["role"];
-                    //Если refresh token истек логинимся заново
+                    //Если refresh token воз-ем heder с информацией об это на клиент
                     if (refreshToken == null)
                     {
-                        context.Request.Path = loginPath;
-                        context.Response.Redirect(loginPath);
+                        context.Response.Headers.Add("IS-REFRESHTOKEN-EXPIRED", "true");
                         return;
                     }
 
@@ -40,7 +37,6 @@ namespace CarWebService.API.Middlewares
                     context.Response.Cookies.Delete("accessToken");
                     context.Response.Cookies.Append("accessToken", accessToken);
                     context.Response.Headers.Add("Authorization", "Bearer " + accessToken);
-                    context.Response.Redirect($"{path}");
                 }
             }
         }
