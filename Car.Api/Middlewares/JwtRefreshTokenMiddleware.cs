@@ -19,17 +19,12 @@ namespace CarWebService.API.Middlewares
 
             if (context.Response.Headers.ContainsKey("IS-TOKEN-EXPIRED"))
             {
-                var headerValue = context.Response.Headers["IS-TOKEN-EXPIRED"];
-
-                if (headerValue == "true")
+                string? refreshToken = context.Request.Cookies["refreshToken"];
+                //Если refresh token истек воз-ем heder с информацией об этом на клиент
+                if (refreshToken == null)
                 {
-                    string? refreshToken = context.Request.Cookies["refreshToken"];
-                    //Если refresh token истек воз-ем heder с информацией об этом на клиент
-                    if (refreshToken == null)
-                    {
-                        context.Response.Headers.Add("IS-REFRESHTOKEN-EXPIRED", "true");
-                        return;
-                    }
+                    context.Response.Headers.Add("IS-REFRESHTOKEN-EXPIRED", "true");
+                    return;
                 }
             }
         }

@@ -35,7 +35,6 @@ namespace CarWebService.API.Controllers
         {
             var accessToken = _tokenServices.CreateToken(role);
             var refreshToken = _tokenServices.CreateRefreshToken();
-
             var cookieForRefrshToken = new CookieOptions //добавление refreshToken в куки на неделю
             {
                 HttpOnly = true,
@@ -43,6 +42,7 @@ namespace CarWebService.API.Controllers
                 SameSite = SameSiteMode.None,
                 Secure = true
             };
+
             Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
 
             var response = new AuthResponse
@@ -76,6 +76,7 @@ namespace CarWebService.API.Controllers
             }
             catch (Exception)
             {
+                Response.StatusCode = StatusCodes.Status500InternalServerError;
                 return Results.StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -99,6 +100,10 @@ namespace CarWebService.API.Controllers
             return Ok(Url.Action(nameof(Login)));
         }
 
+        /// <summary>
+        /// Обновляет истекший access token
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IResult RefreshToken()
         {
