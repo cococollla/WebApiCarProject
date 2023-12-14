@@ -34,7 +34,7 @@ builder.Services.AddCors(options =>
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
         policy.AllowCredentials();
-        policy.WithExposedHeaders("IS-REFRESHTOKEN-EXPIRED");
+        policy.WithExposedHeaders("IS-REFRESHTOKEN-EXPIRED", "IS-TOKEN-EXPIRED");
     });
 });
 builder.Services.AddIdentityCore<User>(options =>

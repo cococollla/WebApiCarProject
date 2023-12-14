@@ -33,13 +33,13 @@ namespace CarWebService.API.Controllers
         /// <returns>AccessToken, RefreshToken, Role</returns>
         private AuthResponse GetToken(string role)
         {
-            var token = _tokenServices.CreateToken(role);
+            var accessToken = _tokenServices.CreateToken(role);
             var refreshToken = _tokenServices.CreateRefreshToken();
 
             var cookieForRefrshToken = new CookieOptions //добавление refreshToken в куки на неделю
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.AddMinutes(1),
+                Expires = DateTime.UtcNow.AddDays(7),
                 SameSite = SameSiteMode.None,
                 Secure = true
             };
@@ -48,7 +48,7 @@ namespace CarWebService.API.Controllers
             var response = new AuthResponse
             {
                 Role = role,
-                AccessToken = token,
+                AccessToken = accessToken,
                 RefreshToken = refreshToken
             };
 
@@ -97,6 +97,15 @@ namespace CarWebService.API.Controllers
             }
 
             return Ok(Url.Action(nameof(Login)));
+        }
+
+        [HttpGet]
+        public IResult RefreshToken()
+        {
+            var role = Request.Headers["role"];
+            var accessToken = _tokenServices.CreateToken(role);
+
+            return Results.Json(accessToken);
         }
     }
 }

@@ -23,20 +23,13 @@ namespace CarWebService.API.Middlewares
 
                 if (headerValue == "true")
                 {
-                    context.Request.Headers.Remove("Authorization");
                     string? refreshToken = context.Request.Cookies["refreshToken"];
-                    string? role = context.Request.Cookies["role"];
-                    //Если refresh token воз-ем heder с информацией об это на клиент
+                    //Если refresh token истек воз-ем heder с информацией об этом на клиент
                     if (refreshToken == null)
                     {
                         context.Response.Headers.Add("IS-REFRESHTOKEN-EXPIRED", "true");
                         return;
                     }
-
-                    var accessToken = _tokenService.CreateToken(role);
-                    context.Response.Cookies.Delete("accessToken");
-                    context.Response.Cookies.Append("accessToken", accessToken);
-                    context.Response.Headers.Add("Authorization", "Bearer " + accessToken);
                 }
             }
         }
