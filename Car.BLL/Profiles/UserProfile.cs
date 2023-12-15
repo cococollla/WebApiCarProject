@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CarWebService.BLL.Services.Models.DtoModels;
+using CarWebService.BLL.Models.DtoModels;
 using CarWebService.DAL.Models.Entity;
 
 namespace CarWebService.BLL.Profiles

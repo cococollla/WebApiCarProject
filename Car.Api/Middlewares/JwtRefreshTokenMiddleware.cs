@@ -5,12 +5,10 @@ namespace CarWebService.API.Middlewares
     public class JwtRefreshTokenMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ITokenServices _tokenService;
 
         public JwtRefreshTokenMiddleware(RequestDelegate next, ITokenServices tokenService)
         {
             _next = next;
-            _tokenService = tokenService;
         }
 
         public async Task Invoke(HttpContext context)

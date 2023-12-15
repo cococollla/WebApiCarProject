@@ -1,4 +1,4 @@
-﻿namespace CarWebService.BLL.Services.Models.View
+﻿namespace CarWebService.BLL.Models.View
 {
     public class CarVm
     {

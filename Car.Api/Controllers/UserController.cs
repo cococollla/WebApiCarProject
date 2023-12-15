@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using CarWebService.BLL.Models.DtoModels;
 using CarWebService.BLL.Services.Contracts;
-using CarWebService.BLL.Services.Models.DtoModels;
 using CarWebService.DAL.Common.Exceptions;
 using CarWebService.DAL.Models.Entity;
 using Microsoft.AspNetCore.Identity;
@@ -40,18 +40,14 @@ namespace CarWebService.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserById(string id)
+        public async Task<ActionResult<UserDto>> GetUserById(int id)
         {
             try
             {
-                var user = await _userManager.FindByIdAsync(id);
+                var user = await _userServices.GetUserByid(id);
+                var userDto = _mapper.Map<UserDto>(user);
 
-                if (user == null)
-                {
-                    throw new NotFoundException("User is not found");
-                }
-
-                return Ok(user);
+                return Ok(userDto);
             }
             catch (NotFoundException)
             {

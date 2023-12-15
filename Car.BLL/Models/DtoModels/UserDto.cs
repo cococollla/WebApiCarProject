@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CarWebService.BLL.Services.Models.DtoModels
+namespace CarWebService.BLL.Models.DtoModels
 {
     public class UserDto
     {
@@ -11,7 +11,6 @@ namespace CarWebService.BLL.Services.Models.DtoModels
         public string Password { get; set; }
         [Required]
         public string Email { get; set; }
-        public string RoleName { get; set; }
-
+        public string? RoleName { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CarWebService.API.Models;
+using CarWebService.BLL.Models.DtoModels;
 using CarWebService.BLL.Services.Contracts;
-using CarWebService.BLL.Services.Models.DtoModels;
 using CarWebService.DAL.Common.Exceptions;
 using CarWebService.DAL.Models.Entity;
 using Microsoft.AspNetCore.Identity;

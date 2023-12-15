@@ -1,5 +1,5 @@
-﻿using CarWebService.BLL.Services.Models.DtoModels;
-using CarWebService.BLL.Services.Models.View;
+﻿using CarWebService.BLL.Models.DtoModels;
+using CarWebService.BLL.Models.View;
 
 namespace CarWebService.BLL.Services.Contracts
 {

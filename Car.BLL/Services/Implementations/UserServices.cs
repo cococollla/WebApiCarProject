@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using CarWebService.BLL.Models.DtoModels;
 using CarWebService.BLL.Services.Contracts;
-using CarWebService.BLL.Services.Models.DtoModels;
 using CarWebService.DAL.Models.Entity;
 using CarWebService.DAL.Repositories.Contracts;
 

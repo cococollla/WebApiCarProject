@@ -1,4 +1,4 @@
-﻿namespace CarWebService.BLL.Services.Models.DtoModels
+﻿namespace CarWebService.BLL.Models.DtoModels
 {
     public class CarDto
     {
