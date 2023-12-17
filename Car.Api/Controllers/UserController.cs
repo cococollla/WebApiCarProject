@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления и просмотра пользователей.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class UserController : ControllerBase
     {
-
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IUserServices _userServices;
@@ -24,6 +26,10 @@ namespace CarWebService.API.Controllers
             _userServices = userServices;
         }
 
+        /// <summary>
+        /// Создание пользователя в БД.
+        /// </summary>
+        /// <param name="request">Данные пользователя.</param>
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(UserDto request)
         {
@@ -39,6 +45,10 @@ namespace CarWebService.API.Controllers
             return Created($"{user.Id}", Url.Action(nameof(GetUserById), new { id = user.Id }));
         }
 
+        /// <summary>
+        /// Поиск записи пользователя по его идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор пользователя для поиска.</param>
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUserById(int id)
         {
@@ -55,6 +65,9 @@ namespace CarWebService.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Вывод записей всех пользователей.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
@@ -77,6 +90,10 @@ namespace CarWebService.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Обновление записи пользователя в БД.
+        /// </summary>
+        /// <param name="request">Данные для обновления.</param>
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UserDto request)
         {
@@ -104,6 +121,10 @@ namespace CarWebService.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Удаления пользователя из БД.
+        /// </summary>
+        /// <param name="id">Идентфикатор пользователя для удаления.</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {

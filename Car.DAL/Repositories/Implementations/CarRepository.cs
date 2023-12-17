@@ -14,7 +14,6 @@ namespace CarWebService.DAL.Repositories.Implementations
             _context = context;
         }
 
-
         /// <summary>
         /// Добавляет автомобиль в БД
         /// </summary>
@@ -92,7 +91,7 @@ namespace CarWebService.DAL.Repositories.Implementations
 
             car.YearRelese = request.YearRelese;
             car.Price = request.Price;
-            car.ShorDescription = request.ShorDescription;
+            car.ShortDescription = request.ShortDescription;
             car.BrandId = request.BrandId;
             car.ColorId = request.ColorId;
 

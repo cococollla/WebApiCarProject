@@ -6,29 +6,42 @@ using CarWebService.DAL.Repositories.Contracts;
 using CarWebService.DAL.Repositories.Implementations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 
+var MyAllowCors = "_myAllowOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
-string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+
 var jwtSettings = builder.Configuration.GetSection("JWT");
 
-builder.Services.AddControllers();
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddEndpointsApiExplorer();
+#region logger
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
-builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
+#endregion
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+#region addDbContext
+builder.Services.AddApplicationContext(builder.Configuration);
+#endregion
+
+#region addServices
 builder.Services.AddSingleton<ITokenServices, TokenServices>();
 builder.Services.AddScoped<ICarServices, CarServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+#endregion
+
+#region addSwagger
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy(MyAllowCors, policy =>
     {
         policy.WithOrigins("http://127.0.0.1:5500");
         policy.AllowAnyHeader();
@@ -37,6 +50,9 @@ builder.Services.AddCors(options =>
         policy.WithExposedHeaders("IS-REFRESHTOKEN-EXPIRED", "IS-TOKEN-EXPIRED");
     });
 });
+#endregion
+
+#region addIdentity
 builder.Services.AddIdentityCore<User>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
@@ -52,17 +68,18 @@ builder.Services.AddIdentityCore<User>(options =>
     .AddEntityFrameworkStores<ApplicationContext>()
     .AddUserManager<UserManager<User>>()
     .AddSignInManager<SignInManager<User>>();
+#endregion
+
+#region addAuthSheme
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.RequireHttpsMetadata = false;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
             IssuerSigningKey = TokenServices.GetSymmetricSecurityKey(),
-
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
@@ -83,20 +100,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
 
     });
+#endregion
 
 var app = builder.Build();
 
-app.UseMiddleware<InternalExceptionHandlerMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<JwtRefreshTokenMiddleware>();
+
 app.UseSwagger();
 app.UseSwaggerUI(config =>
 {
     config.RoutePrefix = string.Empty;
     config.SwaggerEndpoint("swagger/v1/swagger.json", "Car API");
 });
+
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
 app.MapControllers();
+
+app.UseCors(MyAllowCors);
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.Run();

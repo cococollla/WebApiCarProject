@@ -39,14 +39,6 @@ namespace CarWebService.BLL.Services.Implementations
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("carsupersecretsuper_secretkey!123789"));
         }
 
-        public static SigningCredentials CreateSigningCredentials()
-        {
-            return new SigningCredentials(
-                GetSymmetricSecurityKey(),
-                SecurityAlgorithms.HmacSha256
-            );
-        }
-
         public string CreateRefreshToken()
         {
             var randomNumber = new byte[32];
@@ -57,6 +49,14 @@ namespace CarWebService.BLL.Services.Implementations
                 string refreshToken = Convert.ToBase64String(randomNumber);
                 return refreshToken;
             }
+        }
+
+        private SigningCredentials CreateSigningCredentials()
+        {
+            return new SigningCredentials(
+                GetSymmetricSecurityKey(),
+                SecurityAlgorithms.HmacSha256
+            );
         }
     }
 }

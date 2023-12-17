@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для регистрации и авторизации.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class AccountController : ControllerBase
@@ -27,38 +30,9 @@ namespace CarWebService.API.Controllers
         }
 
         /// <summary>
-        /// Выдает токен для аутентифицированного пользователя
+        /// Реализует вход в приложение.
         /// </summary>
-        /// <param name="role">Роль пользователя</param>
-        /// <returns>AccessToken, RefreshToken, Role</returns>
-        private AuthResponse GetToken(string role)
-        {
-            var accessToken = _tokenServices.CreateToken(role);
-            var refreshToken = _tokenServices.CreateRefreshToken();
-            var cookieForRefrshToken = new CookieOptions //добавление refreshToken в куки на неделю
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7),
-                SameSite = SameSiteMode.None,
-                Secure = true
-            };
-
-            Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
-
-            var response = new AuthResponse
-            {
-                Role = role,
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
-
-            return response;
-        }
-
-        /// <summary>
-        /// Реализует вход в приложение
-        /// </summary>
-        /// <param name="request">Данные для входа</param>
+        /// <param name="request">Данные для входа.</param>
         [HttpPost]
         public async Task<IResult> Login(AuthRequest request)
         {
@@ -82,9 +56,9 @@ namespace CarWebService.API.Controllers
         }
 
         /// <summary>
-        /// Регистрация пользователя
+        /// Регистрация пользователя.
         /// </summary>
-        /// <param name="request">Данные пользователя для регистрации</param>
+        /// <param name="request">Данные пользователя для регистрации.</param>
         [HttpPost]
         public async Task<ActionResult<User>> Signup([FromForm] UserDto request)
         {
@@ -101,9 +75,8 @@ namespace CarWebService.API.Controllers
         }
 
         /// <summary>
-        /// Обновляет истекший access token
+        /// Обновляет истекший access token.
         /// </summary>
-        /// <returns></returns>
         [HttpGet]
         public IResult RefreshToken()
         {
@@ -111,6 +84,36 @@ namespace CarWebService.API.Controllers
             var accessToken = _tokenServices.CreateToken(role);
 
             return Results.Json(accessToken);
+        }
+
+        /// <summary>
+        /// Выдает токен для аутентифицированного пользователя.
+        /// </summary>
+        /// <param name="role">Роль пользователя.</param>
+        /// <returns>AccessToken, RefreshToken, Role</returns>
+        private AuthResponse GetToken(string role)
+        {
+            var accessToken = _tokenServices.CreateToken(role);
+            var refreshToken = _tokenServices.CreateRefreshToken();
+
+            var cookieForRefrshToken = new CookieOptions //добавление refreshToken в куки на неделю
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7),
+                SameSite = SameSiteMode.None,
+                Secure = true
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
+
+            var response = new AuthResponse
+            {
+                Role = role,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+
+            return response;
         }
     }
 }

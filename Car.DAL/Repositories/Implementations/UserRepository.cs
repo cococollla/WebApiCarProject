@@ -91,7 +91,6 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// <returns>Id роли из БД</returns>
         public async Task<Role> GetDefaultRole()
         {
-
             var role = await _context.Roles.FirstOrDefaultAsync(role => role.Name == "User");
 
             return role;

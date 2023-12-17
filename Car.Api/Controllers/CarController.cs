@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления и просмотра автомобилей.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class CarController : ControllerBase
@@ -21,6 +24,10 @@ namespace CarWebService.API.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Создание записи об автомобиле в БД.
+        /// </summary>
+        /// <param name="carDto">Данные автомобиля.</param>
         [HttpPost]
         public async Task<IActionResult> CreateCar(CarDto carDto)
         {
@@ -29,6 +36,10 @@ namespace CarWebService.API.Controllers
             return Created($"{carId}", Url.Action(nameof(GetCarById), new { id = carId }));
         }
 
+        /// <summary>
+        /// Обновление данных автомобиля в БД.
+        /// </summary>
+        /// <param name="carDto">Данные для обновления.</param>
         [HttpPut]
         public async Task<IActionResult> UpdateCar(CarDto carDto)
         {
@@ -44,6 +55,10 @@ namespace CarWebService.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Поиск записи автомобиля по его идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор автомобиля для поиска.</param>
         [HttpGet("{id}")]
         public async Task<ActionResult<CarDto>> GetCarById(int id)
         {
@@ -59,6 +74,9 @@ namespace CarWebService.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Вывод записей всех автомобилей.
+        /// </summary>
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<List<CarVm>>> GetCars()
@@ -75,6 +93,10 @@ namespace CarWebService.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Удаление автомобился из БД.
+        /// </summary>
+        /// <param name="id">Id автомобиля для удаления.</param>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCar(int id)
         {

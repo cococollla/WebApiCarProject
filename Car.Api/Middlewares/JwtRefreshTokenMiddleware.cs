@@ -17,9 +17,8 @@ namespace CarWebService.API.Middlewares
 
             if (context.Response.Headers.ContainsKey("IS-TOKEN-EXPIRED"))
             {
-                string? refreshToken = context.Request.Cookies["refreshToken"];
                 //Если refresh token истек воз-ем heder с информацией об этом на клиент
-                if (refreshToken == null)
+                if (context.Request.Cookies["refreshToken"] == null)
                 {
                     context.Response.Headers.Add("IS-REFRESHTOKEN-EXPIRED", "true");
                     return;

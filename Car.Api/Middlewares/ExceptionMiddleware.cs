@@ -3,12 +3,12 @@ using NLog;
 
 namespace CarWebService.API.Middlewares
 {
-    public class InternalExceptionHandlerMiddleware
+    public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly NLog.ILogger _logger;
 
-        public InternalExceptionHandlerMiddleware(RequestDelegate next)
+        public ExceptionMiddleware(RequestDelegate next)
         {
             _next = next;
             _logger = LogManager.GetCurrentClassLogger();
