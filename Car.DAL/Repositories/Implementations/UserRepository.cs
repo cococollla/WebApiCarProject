@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarWebService.DAL.Repositories.Implementations
 {
+    /// <summary>
+    /// Репозитирой для управления записями пользователей в БД.
+    /// </summary>
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationContext _context;
@@ -15,9 +18,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Добавляет пользователя в БД
+        /// Добавляет пользователя в БД.
         /// </summary>
-        /// <param name="request">Данные пользователя для регистрации</param>
+        /// <param name="request">Данные пользователя для регистрации.</param>
         public async Task CreateUser(User request)
         {
             await _context.Users.AddAsync(request);
@@ -27,7 +30,7 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// <summary>
         /// Удаляет запись о пользователе из БД
         /// </summary>
-        /// <param name="id">Id по которому будет удален пользователь</param>
+        /// <param name="id">Идентификатор по которому будет удален пользователь.</param>
         public async Task DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -42,9 +45,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Получает список всех пользователей из БД
+        /// Получает список всех пользователей из БД.
         /// </summary>
-        /// <returns>Список пользователей</returns>
+        /// <returns>Список пользователей.</returns>
         public async Task<List<User>> GetAllUsers()
         {
             var users = await _context.Users.Include(u => u.Role).ToListAsync();
@@ -58,9 +61,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Получает запись о пользователе из БД
+        /// Получает запись о пользователе из БД.
         /// </summary>
-        /// <param name="id">Id по которому будет найден пользователь</param>
+        /// <param name="id">Идентификатор по которому будет найден пользователь.</param>
         /// <returns>Данные пользователя</returns>
         public async Task<User> GetUserByid(int id)
         {
@@ -75,9 +78,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Получает список всех ролей из БД
+        /// Получает список всех ролей из БД.
         /// </summary>
-        /// <returns>Список ролей</returns>
+        /// <returns>Список ролей.</returns>
         public async Task<List<Role>> GetRoles()
         {
             var roles = await _context.Roles.ToListAsync();
@@ -86,9 +89,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Задает роль по-умолчанию для пользователя при регистрации
+        /// Задает роль по-умолчанию для пользователя при регистрации.
         /// </summary>
-        /// <returns>Id роли из БД</returns>
+        /// <returns>Идентификатор роли из БД.</returns>
         public async Task<Role> GetDefaultRole()
         {
             var role = await _context.Roles.FirstOrDefaultAsync(role => role.Name == "User");
@@ -97,10 +100,10 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Получает роль по ее имени
+        /// Получает роль по ее имени.
         /// </summary>
-        /// <param name="name">Имя роли</param>
-        /// <returns>Роль</returns>
+        /// <param name="name">Имя роли.</param>
+        /// <returns>Роль.</returns>
         public async Task<Role> GetRoleByName(string name)
         {
             var role = await _context.Roles.FirstOrDefaultAsync(role => role.Name == name);
@@ -114,11 +117,11 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Получает пользователя по его имейлу и паролю
+        /// Получает пользователя по его имейлу и паролю.
         /// </summary>
-        /// <param name="email">Почта пользователя</param>
-        /// <param name="password">Пароль пользователя</param>
-        /// <returns>Пользователь</returns>
+        /// <param name="email">Почта пользователя.</param>
+        /// <param name="password">Пароль пользователя.</param>
+        /// <returns>Пользователь.</returns>
         /// <exception cref="NotFoundException"></exception>
         public async Task<User> GetExistingUser(string email, string password)
         {

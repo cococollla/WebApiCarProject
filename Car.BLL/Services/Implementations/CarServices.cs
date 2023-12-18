@@ -7,6 +7,9 @@ using CarWebService.DAL.Repositories.Contracts;
 
 namespace CarWebService.BLL.Services.Implementations
 {
+    /// <summary>
+    /// Безнес логика для автомобиля.
+    /// </summary>
     public class CarServices : ICarServices
     {
         private readonly IMapper _mapper;
@@ -18,6 +21,10 @@ namespace CarWebService.BLL.Services.Implementations
             _carRepository = carRepository;
         }
 
+        /// <summary>
+        /// Добавление записи в БД.
+        /// </summary>
+        /// <param name="command"></param>
         public async Task<int> AddCar(CarDto command)
         {
             var car = _mapper.Map<Car>(command);
@@ -26,11 +33,19 @@ namespace CarWebService.BLL.Services.Implementations
             return carId;
         }
 
+        /// <summary>
+        /// Удаление автомобиля.
+        /// </summary>
+        /// <param name="id">Идентификатор автомобиля.</param>
+        /// <returns></returns>
         public async Task DeleteCar(int id)
         {
             await _carRepository.DeleteCar(id);
         }
 
+        /// <summary>
+        /// Получение списка всех автомобилей.
+        /// </summary>
         public async Task<List<CarVm>> GetAllCars()
         {
             var cars = await _carRepository.GetAllCars();
@@ -39,6 +54,10 @@ namespace CarWebService.BLL.Services.Implementations
             return carsDto;
         }
 
+        /// <summary>
+        /// Получение автомобиля.
+        /// </summary>
+        /// <param name="id">Идентификатор автомбиля.</param>
         public async Task<CarVm> GetCarById(int id)
         {
             var car = await _carRepository.GetCarById(id);
@@ -47,6 +66,12 @@ namespace CarWebService.BLL.Services.Implementations
             return carDto;
         }
 
+        /// <summary>
+        /// Обновление записи.
+        /// </summary>
+        /// <param name="command">Данные для обновления.</param>
+        /// <param name="command">Данные для обновления.</param>
+        /// <returns></returns>
         public async Task UpdateCar(CarDto command)
         {
             var car = _mapper.Map<Car>(command);

@@ -8,6 +8,9 @@ using System.Text;
 
 namespace CarWebService.BLL.Services.Implementations
 {
+    /// <summary>
+    /// Скрвис для работы с JWT токенами.
+    /// </summary>
     public class TokenServices : ITokenServices
     {
         private readonly IConfiguration _configuration;
@@ -17,6 +20,11 @@ namespace CarWebService.BLL.Services.Implementations
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Создание access token.
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns>Access token</returns>
         public string CreateToken(string role)
         {
             var now = DateTime.UtcNow;
@@ -34,11 +42,18 @@ namespace CarWebService.BLL.Services.Implementations
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
+        /// <summary>
+        /// Создание ключа.
+        /// </summary>
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes("carsupersecretsuper_secretkey!123789"));
         }
 
+        /// <summary>
+        /// Создание rafresh token.
+        /// </summary>
+        /// <returns></returns>
         public string CreateRefreshToken()
         {
             var randomNumber = new byte[32];
@@ -51,6 +66,9 @@ namespace CarWebService.BLL.Services.Implementations
             }
         }
 
+        /// <summary>
+        /// Создание криптографической подписи токена.
+        /// </summary>
         private SigningCredentials CreateSigningCredentials()
         {
             return new SigningCredentials(

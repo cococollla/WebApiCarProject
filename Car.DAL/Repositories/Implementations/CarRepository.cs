@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarWebService.DAL.Repositories.Implementations
 {
+    /// <summary>
+    /// Репозиторий для управления записями автомоблей в БД.
+    /// </summary>
     public class CarRepository : ICarRepository
     {
         private readonly ApplicationContext _context;
@@ -15,9 +18,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Добавляет автомобиль в БД
+        /// Добавляет автомобиль в БД.
         /// </summary>
-        /// <param name="request">Данные автомобиля</param>
+        /// <param name="request">Данные автомобиля.</param>
         public async Task<int> AddCar(Car request)
         {
             await _context.Cars.AddAsync(request);
@@ -27,9 +30,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Удаляет запись об автомобиле в БД
+        /// Удаляет запись об автомобиле в БД.
         /// </summary>
-        /// <param name="id">Id по которому будет найден автомобиль</param>
+        /// <param name="id">Идентификатор по которому будет найден автомобиль.</param>
         public async Task DeleteCar(int id)
         {
             var car = await _context.Cars.FindAsync(id);
@@ -44,9 +47,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Получает список всех автомобилей в БД
+        /// Получает список всех автомобилей в БД.
         /// </summary>
-        /// <returns>Список автомобилей</returns>
+        /// <returns>Список автомобилей.</returns>
         public async Task<List<Car>> GetAllCars()
         {
             var cars = await _context.Cars.Include(b => b.Brand).Include(c => c.Color).ToListAsync();
@@ -60,10 +63,10 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Получает запись об автомобиле из БД
+        /// Получает запись об автомобиле из БД.
         /// </summary>
-        /// <param name="id">Id по которому будет найден автомобиль</param>
-        /// <returns>Данные автомобиля</returns>
+        /// <param name="id">Идентификатор по которому будет найден автомобиль.</param>
+        /// <returns>Данные автомобиля.</returns>
         public async Task<Car> GetCarById(int id)
         {
             var car = await _context.Cars.Include(b => b.Brand).Include(c => c.Color).FirstOrDefaultAsync(car => car.Id == id);
@@ -77,9 +80,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Обновляет данные автомобиля в БД
+        /// Обновляет данные автомобиля в БД.
         /// </summary>
-        /// <param name="request">Обновленные данные</param>
+        /// <param name="request">Обновленные данных.</param>
         public async Task UpdateCar(Car request)
         {
             var car = await _context.Cars.FirstOrDefaultAsync(car => car.Id == request.Id);
@@ -99,9 +102,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Получает список брэндов автомобилей
+        /// Получает список брендов автомобилей.
         /// </summary>
-        /// <returns>Список брэндов</returns>
+        /// <returns>Список брендов.</returns>
         public async Task<List<Brand>> GetBrands()
         {
             List<Brand> brands = await _context.Brands.ToListAsync();
@@ -110,9 +113,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Получает список цветов для автомобилей
+        /// Получает список цветов для автомобилей.
         /// </summary>
-        /// <returns>Список цветов</returns>
+        /// <returns>Список цветов.</returns>
         public async Task<List<Color>> GetColors()
         {
             List<Color> colors = await _context.Colors.ToListAsync();
