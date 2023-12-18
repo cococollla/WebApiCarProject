@@ -64,7 +64,7 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// Получает запись о пользователе из БД.
         /// </summary>
         /// <param name="id">Идентификатор по которому будет найден пользователь.</param>
-        /// <returns>Данные пользователя</returns>
+        /// <returns>Данные пользователя.</returns>
         public async Task<User> GetUserByid(int id)
         {
             var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(user => user.Id == id);

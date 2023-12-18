@@ -26,7 +26,7 @@
         public string? ShortDescription { get; set; }
 
         /// <summary>
-        /// Id на запись с цветом для данного автомобиля.
+        /// Идентификатор на запись с цветом для данного автомобиля.
         /// </summary>
         public int ColorId { get; set; }
 
@@ -36,7 +36,7 @@
         public Color Color { get; set; }
 
         /// <summary>
-        /// Id на запись с брэндом для данного автомобиля.
+        /// Идентификатор на запись с брендом для данного автомобиля.
         /// </summary>
         public int BrandId { get; set; }
 

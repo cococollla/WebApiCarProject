@@ -54,7 +54,6 @@ namespace CarWebService.BLL.Services.Implementations
         /// Получение пользователя.
         /// </summary>
         /// <param name="id">Идентификатор пользователя.</param>
-        /// <returns></returns>
         public async Task<UserDto> GetUserByid(int id)
         {
             var user = await _userRepository.GetUserByid(id);
@@ -66,10 +65,11 @@ namespace CarWebService.BLL.Services.Implementations
         /// <summary>
         /// Присвоение роли "User" пользователю.
         /// </summary>
-        /// <returns>Роль</returns>
+        /// <returns>Роль.</returns>
         public async Task<Role> GetDefaultRole()
         {
             var role = await _userRepository.GetDefaultRole();
+
             return role;
         }
 
@@ -77,7 +77,7 @@ namespace CarWebService.BLL.Services.Implementations
         /// Получение роли по названию.
         /// </summary>
         /// <param name="name">Название роли.</param>
-        /// <returns>Роль</returns>
+        /// <returns>Роль.</returns>
         public async Task<Role> GetRoleByName(string name)
         {
             var role = await _userRepository.GetRoleByName(name);

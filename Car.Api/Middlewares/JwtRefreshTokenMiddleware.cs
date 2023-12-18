@@ -1,12 +1,10 @@
-﻿using CarWebService.BLL.Services.Contracts;
-
-namespace CarWebService.API.Middlewares
+﻿namespace CarWebService.API.Middlewares
 {
     public class JwtRefreshTokenMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public JwtRefreshTokenMiddleware(RequestDelegate next, ITokenServices tokenService)
+        public JwtRefreshTokenMiddleware(RequestDelegate next)
         {
             _next = next;
         }

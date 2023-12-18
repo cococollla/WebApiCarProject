@@ -24,7 +24,7 @@ namespace CarWebService.BLL.Services.Implementations
         /// <summary>
         /// Добавление записи в БД.
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="command">Данные автомобиля.</param>
         public async Task<int> AddCar(CarDto command)
         {
             var car = _mapper.Map<Car>(command);
@@ -70,8 +70,6 @@ namespace CarWebService.BLL.Services.Implementations
         /// Обновление записи.
         /// </summary>
         /// <param name="command">Данные для обновления.</param>
-        /// <param name="command">Данные для обновления.</param>
-        /// <returns></returns>
         public async Task UpdateCar(CarDto command)
         {
             var car = _mapper.Map<Car>(command);

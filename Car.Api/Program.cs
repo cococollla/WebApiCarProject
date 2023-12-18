@@ -30,7 +30,7 @@ builder.Services.AddApplicationContext(builder.Configuration);
 #endregion
 
 #region addServices
-builder.Services.AddSingleton<ITokenServices, TokenServices>();
+builder.Services.AddScoped<ITokenServices, TokenServices>();
 builder.Services.AddScoped<ICarServices, CarServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
@@ -70,7 +70,7 @@ builder.Services.AddIdentityCore<User>(options =>
     .AddSignInManager<SignInManager<User>>();
 #endregion
 
-#region addAuthSheme
+#region addAuthSñheme
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
