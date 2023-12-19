@@ -50,14 +50,7 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// <returns>Список пользователей.</returns>
         public async Task<List<User>> GetAllUsers()
         {
-            var users = await _context.Users.Include(u => u.Role).ToListAsync();
-
-            if (users == null)
-            {
-                throw new NotFoundException("Not found");
-            }
-
-            return users;
+            return await _context.Users.Include(u => u.Role).ToListAsync();
         }
 
         /// <summary>
@@ -67,14 +60,7 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// <returns>Данные пользователя.</returns>
         public async Task<User> GetUserByid(int id)
         {
-            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(user => user.Id == id);
-
-            if (user == null)
-            {
-                throw new NotFoundException("User is not found");
-            }
-
-            return user;
+            return await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(user => user.Id == id);
         }
 
         /// <summary>
@@ -122,15 +108,9 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// <param name="email">Почта пользователя.</param>
         /// <param name="password">Пароль пользователя.</param>
         /// <returns>Пользователь.</returns>
-        /// <exception cref="NotFoundException"></exception>
         public async Task<User> GetExistingUser(string email, string password)
         {
             var user = _context.Users.Include(u => u.Role).FirstOrDefault(user => user.Email == email && user.Password == password);
-
-            if (user == null)
-            {
-                throw new NotFoundException("User is not found");
-            }
 
             return user;
         }

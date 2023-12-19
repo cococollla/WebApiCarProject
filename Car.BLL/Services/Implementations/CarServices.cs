@@ -37,10 +37,11 @@ namespace CarWebService.BLL.Services.Implementations
         /// Удаление автомобиля.
         /// </summary>
         /// <param name="id">Идентификатор автомобиля.</param>
-        /// <returns></returns>
-        public async Task DeleteCar(int id)
+        public async Task<bool> DeleteCar(int id)
         {
-            await _carRepository.DeleteCar(id);
+            var result = await _carRepository.DeleteCar(id);
+
+            return result;
         }
 
         /// <summary>
@@ -70,10 +71,12 @@ namespace CarWebService.BLL.Services.Implementations
         /// Обновление записи.
         /// </summary>
         /// <param name="command">Данные для обновления.</param>
-        public async Task UpdateCar(CarDto command)
+        public async Task<bool> UpdateCar(CarDto command)
         {
             var car = _mapper.Map<Car>(command);
-            await _carRepository.UpdateCar(car);
+            var result = await _carRepository.UpdateCar(car);
+
+            return result;
         }
     }
 }

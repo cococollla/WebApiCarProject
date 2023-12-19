@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CarWebService.BLL.Models.DtoModels;
 using CarWebService.BLL.Services.Contracts;
-using CarWebService.DAL.Common.Exceptions;
 using CarWebService.DAL.Models.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +36,7 @@ namespace CarWebService.API.Controllers
             user.Role = await _userServices.GetDefaultRole();
             var result = await _userManager.CreateAsync(user, user.Password);
 
-            if (!result.Succeeded)
+            if (!result.Succeeded)//Возникает, если не удалось подключиться к БД или невалидные данные пользователя
             {
                 throw new Exception();
             }
@@ -52,17 +51,16 @@ namespace CarWebService.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUserById(int id)
         {
-            try
-            {
-                var user = await _userServices.GetUserByid(id);
-                var userDto = _mapper.Map<UserDto>(user);
+            var user = await _userServices.GetUserByid(id);
 
-                return Ok(userDto);
-            }
-            catch (NotFoundException)
+            if (user == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+
+            var userDto = _mapper.Map<UserDto>(user);
+
+            return Ok(userDto);
         }
 
         /// <summary>
@@ -71,23 +69,16 @@ namespace CarWebService.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
-            try
-            {
-                var users = await _userServices.GetAllUsers();
+            var users = await _userServices.GetAllUsers();
 
-                if (users == null)
-                {
-                    throw new NotFoundException("Not found");
-                }
-
-                var usersDto = _mapper.Map<List<UserDto>>(users);
-
-                return Ok(usersDto);
-            }
-            catch (NotFoundException)
+            if (users == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+
+            var usersDto = _mapper.Map<List<UserDto>>(users);
+
+            return Ok(usersDto);
         }
 
         /// <summary>
@@ -97,28 +88,21 @@ namespace CarWebService.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UserDto request)
         {
-            try
-            {
-                var user = _mapper.Map<User>(request);
-                var result = await _userManager.FindByIdAsync(user.Id.ToString()); //Также возможно стоит использовать метод репозитория
+            var user = _mapper.Map<User>(request);
+            var result = await _userManager.FindByIdAsync(user.Id.ToString()); //Также возможно стоит использовать метод репозитория
 
-                if (result == null)
-                {
-                    throw new NotFoundException("User is not found");
-                }
-
-                result.UserName = request.Name;
-                result.Email = request.Email;//email должен быть написан по шаблону [...@...]
-                result.Role = await _userServices.GetRoleByName(request.RoleName);
-
-                var updateResult = await _userManager.UpdateAsync(result);
-
-                return NoContent();
-            }
-            catch (NotFoundException)
+            if (result == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+
+            result.UserName = request.Name;
+            result.Email = request.Email;//email должен быть написан по шаблону [...@...]
+            result.Role = await _userServices.GetRoleByName(request.RoleName);
+
+            await _userManager.UpdateAsync(result);
+
+            return NoContent();
         }
 
         /// <summary>
@@ -128,23 +112,16 @@ namespace CarWebService.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            try
-            {
-                var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
-                if (user == null)
-                {
-                    throw new NotFoundException("User is not found");
-                }
-
-                await _userManager.DeleteAsync(user); //DeleteAsync userManger принимает объект User, поэтому приходится сначала найти пользователя по id
-
-                return Ok();
-            }
-            catch (NotFoundException)
+            if (user == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+
+            await _userManager.DeleteAsync(user); //DeleteAsync userManger принимает объект User, поэтому приходится сначала найти пользователя по id
+
+            return Ok();
         }
     }
 }

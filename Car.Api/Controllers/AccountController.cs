@@ -2,7 +2,6 @@
 using CarWebService.API.Models;
 using CarWebService.BLL.Models.DtoModels;
 using CarWebService.BLL.Services.Contracts;
-using CarWebService.DAL.Common.Exceptions;
 using CarWebService.DAL.Models.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,29 +29,23 @@ namespace CarWebService.API.Controllers
         }
 
         /// <summary>
-        /// Реализует вход в приложение.
+        /// Реализует вход в аккаунт.
         /// </summary>
         /// <param name="request">Данные для входа.</param>
         [HttpPost]
         public async Task<IResult> Login(AuthRequest request)
         {
-            try
-            {
-                var user = await _userService.GetExistingUser(request.Email, request.Password);
-                var response = GetToken(user.Role.Name);
+            var user = await _userService.GetExistingUser(request.Email, request.Password);
 
-                return Results.Json(response);
-            }
-            catch (NotFoundException)
+            if (user == null)
             {
-                Response.StatusCode = StatusCodes.Status404NotFound;
+                Response.StatusCode = StatusCodes.Status404NotFound;//Явно присваиваем код ответа, т.к. Results.NotFound() вернет ответ с кодом 200, а NotFound 404 запишет в тело ответа
                 return Results.NotFound();
             }
-            catch (Exception)
-            {
-                Response.StatusCode = StatusCodes.Status500InternalServerError;
-                return Results.StatusCode(StatusCodes.Status500InternalServerError);
-            }
+
+            var response = GetToken(user.Role.Name);
+
+            return Results.Json(response);
         }
 
         /// <summary>
@@ -66,7 +59,7 @@ namespace CarWebService.API.Controllers
             user.Role = await _userService.GetDefaultRole();
             var result = await _userManager.CreateAsync(user, user.Password);
 
-            if (!result.Succeeded)
+            if (!result.Succeeded)//Возникает, если не удалось подключиться к БД или невалидные данные пользователя
             {
                 return BadRequest(result.Errors);
             }

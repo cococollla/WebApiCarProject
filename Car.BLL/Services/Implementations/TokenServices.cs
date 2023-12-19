@@ -23,8 +23,8 @@ namespace CarWebService.BLL.Services.Implementations
         /// <summary>
         /// Создание access token.
         /// </summary>
-        /// <param name="role"></param>
-        /// <returns>Access token</returns>
+        /// <param name="role">Роль пользователя.</param>
+        /// <returns>Access token.</returns>
         public string CreateToken(string role)
         {
             var now = DateTime.UtcNow;

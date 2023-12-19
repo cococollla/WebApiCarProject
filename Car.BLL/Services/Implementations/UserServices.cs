@@ -86,7 +86,7 @@ namespace CarWebService.BLL.Services.Implementations
         }
 
         /// <summary>
-        /// Полкчение существующего пользователя.
+        /// Получение существующего пользователя.
         /// </summary>
         /// <param name="email">Почта пользователя.</param>
         /// <param name="password">Пароль пользоватлея.</param>

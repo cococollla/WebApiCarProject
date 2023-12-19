@@ -1,5 +1,4 @@
-﻿using CarWebService.DAL.Common.Exceptions;
-using CarWebService.DAL.Models.Entity;
+﻿using CarWebService.DAL.Models.Entity;
 using CarWebService.DAL.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,17 +32,19 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// Удаляет запись об автомобиле в БД.
         /// </summary>
         /// <param name="id">Идентификатор по которому будет найден автомобиль.</param>
-        public async Task DeleteCar(int id)
+        public async Task<bool> DeleteCar(int id)
         {
             var car = await _context.Cars.FindAsync(id);
 
             if (car == null)
             {
-                throw new NotFoundException($"Car is not found");
+                return false;
             }
 
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
+
+            return true;
         }
 
         /// <summary>
@@ -52,14 +53,7 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// <returns>Список автомобилей.</returns>
         public async Task<List<Car>> GetAllCars()
         {
-            var cars = await _context.Cars.Include(b => b.Brand).Include(c => c.Color).ToListAsync();
-
-            if (cars == null)
-            {
-                throw new NotFoundException("Not found");
-            }
-
-            return cars;
+            return await _context.Cars.Include(b => b.Brand).Include(c => c.Color).ToListAsync();
         }
 
         /// <summary>
@@ -69,27 +63,20 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// <returns>Данные автомобиля.</returns>
         public async Task<Car> GetCarById(int id)
         {
-            var car = await _context.Cars.Include(b => b.Brand).Include(c => c.Color).FirstOrDefaultAsync(car => car.Id == id);
-
-            if (car == null)
-            {
-                throw new NotFoundException($"Car is not found");
-            }
-
-            return car;
+            return await _context.Cars.Include(b => b.Brand).Include(c => c.Color).FirstOrDefaultAsync(car => car.Id == id);
         }
 
         /// <summary>
         /// Обновляет данные автомобиля в БД.
         /// </summary>
         /// <param name="request">Обновленные данных.</param>
-        public async Task UpdateCar(Car request)
+        public async Task<bool> UpdateCar(Car request)
         {
             var car = await _context.Cars.FirstOrDefaultAsync(car => car.Id == request.Id);
 
             if (car == null)
             {
-                throw new NotFoundException($"Car is not found");
+                return false;
             }
 
             car.YearRelese = request.YearRelese;
@@ -99,6 +86,8 @@ namespace CarWebService.DAL.Repositories.Implementations
             car.ColorId = request.ColorId;
 
             await _context.SaveChangesAsync();
+
+            return true;
         }
 
         /// <summary>

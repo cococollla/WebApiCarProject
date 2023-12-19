@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 
-var MyAllowCors = "_myAllowOrigins";
+const string MyAllowCors = "_myAllowOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 

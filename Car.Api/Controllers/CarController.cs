@@ -2,7 +2,6 @@
 using CarWebService.BLL.Models.DtoModels;
 using CarWebService.BLL.Models.View;
 using CarWebService.BLL.Services.Contracts;
-using CarWebService.DAL.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,16 +42,14 @@ namespace CarWebService.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateCar(CarDto carDto)
         {
-            try
-            {
-                await _carServices.UpdateCar(carDto);
+            var result = await _carServices.UpdateCar(carDto);
 
-                return NoContent();
-            }
-            catch (NotFoundException)
+            if (!result)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+
+            return NoContent();
         }
 
         /// <summary>
@@ -62,16 +59,14 @@ namespace CarWebService.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CarDto>> GetCarById(int id)
         {
-            try
-            {
-                var car = await _carServices.GetCarById(id);
+            var car = await _carServices.GetCarById(id);
 
-                return Ok(car);
-            }
-            catch (NotFoundException)
+            if (car == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+
+            return Ok(car);
         }
 
         /// <summary>
@@ -81,16 +76,14 @@ namespace CarWebService.API.Controllers
         [HttpGet]
         public async Task<ActionResult<List<CarVm>>> GetCars()
         {
-            try
-            {
-                var cars = await _carServices.GetAllCars();
+            var cars = await _carServices.GetAllCars();
 
-                return Ok(cars);
-            }
-            catch (NotFoundException)
+            if (cars == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+
+            return Ok(cars);
         }
 
         /// <summary>
@@ -100,16 +93,14 @@ namespace CarWebService.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCar(int id)
         {
-            try
-            {
-                await _carServices.DeleteCar(id);
+            var result = await _carServices.DeleteCar(id);
 
-                return Ok();
-            }
-            catch (NotFoundException)
+            if (!result)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
+
+            return Ok();
         }
     }
 }
