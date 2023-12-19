@@ -15,30 +15,30 @@ var builder = WebApplication.CreateBuilder(args);
 
 var jwtSettings = builder.Configuration.GetSection("JWT");
 
-#region logger
-builder.Logging.ClearProviders();
-builder.Host.UseNLog();
-#endregion
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+//Подключение NLog
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
+
+//Подключение AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-#region addDbContext
+//Подключение DbContext
 builder.Services.AddApplicationContext(builder.Configuration);
-#endregion
 
-#region addServices
+//Подключение сервисов
 builder.Services.AddScoped<ITokenServices, TokenServices>();
 builder.Services.AddScoped<ICarServices, CarServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-#endregion
 
-#region addSwagger
+//Подключение swagger
 builder.Services.AddSwaggerGen();
+
+//Настройка cors
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(MyAllowCors, policy =>
@@ -50,9 +50,8 @@ builder.Services.AddCors(options =>
         policy.WithExposedHeaders("IS-REFRESHTOKEN-EXPIRED", "IS-TOKEN-EXPIRED");
     });
 });
-#endregion
 
-#region addIdentity
+//Подключение Identity
 builder.Services.AddIdentityCore<User>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
@@ -68,9 +67,8 @@ builder.Services.AddIdentityCore<User>(options =>
     .AddEntityFrameworkStores<ApplicationContext>()
     .AddUserManager<UserManager<User>>()
     .AddSignInManager<SignInManager<User>>();
-#endregion
 
-#region addAuthSсheme
+//Подключение схемы авторизации через JwtBearer
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -100,7 +98,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
 
     });
-#endregion
+
 
 var app = builder.Build();
 
