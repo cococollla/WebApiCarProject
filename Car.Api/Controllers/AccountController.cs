@@ -80,6 +80,16 @@ namespace CarWebService.API.Controllers
         }
 
         /// <summary>
+        /// Реализует выход из аккаунта.
+        /// </summary>
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("refreshToken");
+            return NoContent();
+        }
+
+        /// <summary>
         /// Выдает токен для аутентифицированного пользователя.
         /// </summary>
         /// <param name="role">Роль пользователя.</param>

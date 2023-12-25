@@ -27,7 +27,7 @@ namespace CarWebService.DAL.Models.Entity
             modelBuilder.Entity<Role>().HasData(
                 new Role[]
                 {
-                    new Role { Id = 1, Name = "Admin", NormalizedName = "ADMIN"},
+                    new Role { Id = 1, Name = "Admin", NormalizedName = "ADMIN" },
                     new Role { Id = 2, Name = "Manager", NormalizedName = "MANAGER" },
                     new Role { Id = 3, Name = "User", NormalizedName = "USER" }
                 });
