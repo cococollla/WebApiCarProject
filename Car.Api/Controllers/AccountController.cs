@@ -18,14 +18,16 @@ namespace CarWebService.API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IUserServices _userService;
         private readonly ITokenServices _tokenServices;
+        private readonly ISessionServices _sessionServices;
         private readonly IMapper _mapper;
 
-        public AccountController(UserManager<User> userManager, IUserServices userService, IMapper mapper, ITokenServices tokenServices)
+        public AccountController(UserManager<User> userManager, IUserServices userService, IMapper mapper, ITokenServices tokenServices, ISessionServices sessionServices)
         {
             _userManager = userManager;
             _userService = userService;
             _mapper = mapper;
             _tokenServices = tokenServices;
+            _sessionServices = sessionServices;
         }
 
         /// <summary>
@@ -43,7 +45,7 @@ namespace CarWebService.API.Controllers
                 return Results.NotFound();
             }
 
-            var response = GetToken(user.Role.Name);
+            var response = await GetToken(user);
 
             return Results.Json(response);
         }
@@ -71,10 +73,38 @@ namespace CarWebService.API.Controllers
         /// Обновляет истекший access token.
         /// </summary>
         [HttpGet]
-        public IResult RefreshToken()
+        public async Task<IResult> RefreshToken()
         {
-            var role = Request.Headers["role"];
-            var accessToken = _tokenServices.CreateToken(role);
+            var userId = int.Parse(Request.Headers["userId"]);
+            var userDto = await _userService.GetUserByid(userId);
+            var session = await _sessionServices.GetSessionByUserId(userId);
+            var refreshTokenCookie = Request.Cookies["refreshToken"];
+
+            if (session.RefreshToken != refreshTokenCookie && session.ValidTo > DateTime.Now)
+            {
+                Response.StatusCode = StatusCodes.Status404NotFound;//Явно присваиваем код ответа, т.к. Results.NotFound() вернет ответ с кодом 200, а NotFound 404 запишет в тело ответа
+                return Results.NotFound();
+            }
+
+            var refreshToken = _tokenServices.CreateRefreshToken();
+            var accessToken = _tokenServices.CreateToken(userDto.RoleName);
+
+            session.RefreshToken = refreshToken;
+            session.ValidTo = DateTime.UtcNow.Add(TimeSpan.FromMinutes(5));
+
+            await _sessionServices.UpdateSession(session);
+
+            Response.Cookies.Delete("refreshToken");
+
+            var cookieForRefrshToken = new CookieOptions //Создание кук
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.Add(TimeSpan.FromMinutes(5)),
+                SameSite = SameSiteMode.None,
+                Secure = true
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);//добавление refreshToken в куки на неделю
 
             return Results.Json(accessToken);
         }
@@ -83,9 +113,13 @@ namespace CarWebService.API.Controllers
         /// Реализует выход из аккаунта.
         /// </summary>
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+            var userId = int.Parse(Request.Headers["userId"]);
+            await _sessionServices.DeleteSesion(userId);
+
             Response.Cookies.Delete("refreshToken");
+
             return NoContent();
         }
 
@@ -94,27 +128,44 @@ namespace CarWebService.API.Controllers
         /// </summary>
         /// <param name="role">Роль пользователя.</param>
         /// <returns>AccessToken, RefreshToken, Role</returns>
-        private AuthResponse GetToken(string role)
+        private async Task<AuthResponse> GetToken(User user)
         {
-            var accessToken = _tokenServices.CreateToken(role);
+            var accessToken = _tokenServices.CreateToken(user.Role.Name);
             var refreshToken = _tokenServices.CreateRefreshToken();
 
-            var cookieForRefrshToken = new CookieOptions //добавление refreshToken в куки на неделю
+            var cookieForRefrshToken = new CookieOptions //Создание кук
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.Add(TimeSpan.FromMinutes(5)),
                 SameSite = SameSiteMode.None,
                 Secure = true
             };
 
-            Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);
+            Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);//добавление refreshToken в куки на неделю
+
+            var newSession = new Session
+            {
+                RefreshToken = refreshToken,
+                ValidTo = DateTime.UtcNow.Add(TimeSpan.FromMinutes(5)),
+                User = user,
+                UserId = user.Id
+            };
 
             var response = new AuthResponse
             {
-                Role = role,
+                Role = user.Role.Name,
                 AccessToken = accessToken,
-                RefreshToken = refreshToken
+                UserId = user.Id
             };
+
+            var session = await _sessionServices.GetSessionByUserId(user.Id);
+
+            if (session != null)
+            {
+                await _sessionServices.UpdateSession(newSession);
+            }
+
+            await _sessionServices.CreateSession(newSession);
 
             return response;
         }

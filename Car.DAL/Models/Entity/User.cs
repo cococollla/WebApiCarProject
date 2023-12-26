@@ -18,5 +18,10 @@ namespace CarWebService.DAL.Models.Entity
         /// Роль пользователя.
         /// </summary>
         public Role Role { get; set; }
+
+        /// <summary>
+        /// Хранит рефреш токен для сессии пользователя.
+        /// </summary>
+        public Session Session { get; set; }
     }
 }

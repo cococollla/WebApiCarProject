@@ -1,23 +1,23 @@
 ﻿namespace CarWebService.API.Models
 {
     /// <summary>
-    /// Моделья для ответа прни успешной авторизации
+    /// Моделья для ответа прни успешной авторизации.
     /// </summary>
     public class AuthResponse
     {
         /// <summary>
-        /// Роль авторизованного пользователя
+        /// Роль авторизованного пользователя.
         /// </summary>
         public string Role { get; set; }
 
         /// <summary>
-        /// Токен пользователя
+        /// Токен пользователя.
         /// </summary>
         public string AccessToken { get; set; }
 
         /// <summary>
-        /// Рефреш токен
+        /// Идентификатор пользователя.
         /// </summary>
-        public string RefreshToken { get; set; }
+        public int UserId { get; set; }
     }
 }

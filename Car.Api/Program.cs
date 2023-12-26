@@ -31,9 +31,11 @@ builder.Services.AddApplicationContext(builder.Configuration);
 //Подключение сервисов
 builder.Services.AddScoped<ITokenServices, TokenServices>();
 builder.Services.AddScoped<ICarServices, CarServices>();
+builder.Services.AddScoped<ISessionServices, SessionServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 
 //Подключение swagger
 builder.Services.AddSwaggerGen();
