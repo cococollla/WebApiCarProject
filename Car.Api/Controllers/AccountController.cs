@@ -80,7 +80,7 @@ namespace CarWebService.API.Controllers
             var session = await _sessionServices.GetSessionByUserId(userId);
             var refreshTokenCookie = Request.Cookies["refreshToken"];
 
-            if (session.RefreshToken != refreshTokenCookie && session.ValidTo > DateTime.Now)
+            if (session.RefreshToken != refreshTokenCookie && session.ValidTo > DateTime.UtcNow)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;//Явно присваиваем код ответа, т.к. Results.NotFound() вернет ответ с кодом 200, а NotFound 404 запишет в тело ответа
                 return Results.NotFound();
@@ -163,6 +163,8 @@ namespace CarWebService.API.Controllers
             if (session != null)
             {
                 await _sessionServices.UpdateSession(newSession);
+
+                return response;
             }
 
             await _sessionServices.CreateSession(newSession);
