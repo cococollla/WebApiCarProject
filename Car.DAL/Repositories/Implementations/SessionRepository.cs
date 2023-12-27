@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarWebService.DAL.Repositories.Implementations
 {
+    /// <summary>
+    /// Управление записями сессий.
+    /// </summary>
     public class SessionRepository : ISessionRepository
     {
         private readonly ApplicationContext _context;

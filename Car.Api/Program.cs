@@ -66,9 +66,11 @@ builder.Services.AddIdentityCore<User>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
 })
-    .AddEntityFrameworkStores<ApplicationContext>()
+    .AddRoles<Role>()
     .AddUserManager<UserManager<User>>()
-    .AddSignInManager<SignInManager<User>>();
+    .AddSignInManager<SignInManager<User>>()
+    .AddEntityFrameworkStores<ApplicationContext>();
+
 
 //Подключение схемы авторизации через JwtBearer
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -121,5 +123,8 @@ app.UseCors(MyAllowCors);
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+//Инициализация БД.
+SeedData.AddData(app);
 
 app.Run();

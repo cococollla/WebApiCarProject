@@ -4,6 +4,9 @@ using CarWebService.DAL.Repositories.Contracts;
 
 namespace CarWebService.BLL.Services.Implementations
 {
+    /// <summary>
+    /// Управление записями сессии.
+    /// </summary>
     public class SessionServices : ISessionServices
     {
         private readonly ISessionRepository _sessionRepository;
