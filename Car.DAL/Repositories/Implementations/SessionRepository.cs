@@ -13,6 +13,10 @@ namespace CarWebService.DAL.Repositories.Implementations
             _context = context;
         }
 
+        /// <summary>
+        /// Добавление записи в БД.
+        /// </summary>
+        /// <param name="sessionData">Данные сессии.</param>
         public async Task<int> CreateSession(Session sessionData)
         {
             await _context.Sessions.AddAsync(sessionData);
@@ -21,6 +25,10 @@ namespace CarWebService.DAL.Repositories.Implementations
             return sessionData.Id;
         }
 
+        /// <summary>
+        /// Удаление записи сессии.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         public async Task<bool> DeleteSesion(int userId)
         {
             var session = await _context.Sessions.FirstOrDefaultAsync(s => s.UserId == userId);
@@ -36,11 +44,20 @@ namespace CarWebService.DAL.Repositories.Implementations
             return true;
         }
 
+        /// <summary>
+        /// Получение записи сессии по идентификатору пользователя.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Данные сессии.</returns>
         public async Task<Session> GetSessionByUserId(int userId)
         {
             return await _context.Sessions.FirstOrDefaultAsync(session => session.UserId == userId);
         }
 
+        /// <summary>
+        /// Обновляет данные сессии.
+        /// </summary>
+        /// <param name="sessionData">Данные для обновления</param>
         public async Task<bool> UpdateSession(Session sessionData)
         {
             var session = await _context.Sessions.FirstOrDefaultAsync(s => s.UserId == sessionData.UserId);
@@ -58,6 +75,10 @@ namespace CarWebService.DAL.Repositories.Implementations
             return true;
         }
 
+        /// <summary>
+        /// Получение рефреш токена.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
         public async Task<string> GetRefreshToken(int userId)
         {
             var refreshToken = await _context.Sessions

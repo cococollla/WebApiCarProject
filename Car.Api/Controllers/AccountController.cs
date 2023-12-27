@@ -95,7 +95,13 @@ namespace CarWebService.API.Controllers
             session.RefreshToken = refreshToken;
             session.ValidTo = DateTime.UtcNow.Add(refreshTokenLifetime);
 
-            await _sessionServices.UpdateSession(session);
+            var result = await _sessionServices.UpdateSession(session);
+
+            if (!result)
+            {
+                Response.StatusCode = StatusCodes.Status404NotFound;//Явно присваиваем код ответа, т.к. Results.NotFound() вернет ответ с кодом 200, а NotFound 404 запишет в тело ответа
+                return Results.NotFound();
+            }
 
             Response.Cookies.Delete("refreshToken");
 
