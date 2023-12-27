@@ -3,15 +3,17 @@
     public interface ITokenServices
     {
         /// <summary>
-        /// Создание access token.
+        /// Создание access токена.
         /// </summary>
         /// <param name="role">Роль пользователя.</param>
-        /// <returns>Access token.</returns>
-        public string CreateToken(string role);
+        /// <param name="email">Электронный адрес пользователяю</param>
+        public string CreateToken(string role, string email);
 
         /// <summary>
-        /// Создание rafresh token.
+        /// Создание refresh токена.
         /// </summary>
-        public string CreateRefreshToken();
+        /// <param name="role">Роль пользователя.</param>
+        /// <param name="email">Электронная почта пользователя.</param>
+        public string CreateRefreshToken(string role, string email);
     }
 }

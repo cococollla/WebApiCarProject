@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace CarWebService.BLL.Services.Implementations
@@ -21,21 +20,24 @@ namespace CarWebService.BLL.Services.Implementations
         }
 
         /// <summary>
-        /// Создание access token.
+        /// Создание access токена.
         /// </summary>
         /// <param name="role">Роль пользователя.</param>
-        /// <returns>Access token.</returns>
-        public string CreateToken(string role)
+        /// <param name="email">Электронная почта пользователя.</param>
+        public string CreateToken(string role, string email)
         {
-            var now = DateTime.UtcNow;
-            var claims = new List<Claim> { new Claim(ClaimTypes.Role, role) };
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.Email, email)
+            };
 
             var jwt = new JwtSecurityToken(
                     issuer: _configuration.GetSection("JWT").GetValue<string>("Issuer"),
                     audience: _configuration.GetSection("JWT").GetValue<string>("Audience"),
-                    notBefore: now,
+                    notBefore: DateTime.UtcNow,
                     claims: claims,
-                    expires: now.Add(TimeSpan.FromSeconds(_configuration.GetSection("JWT").GetValue<double>("Lifetime"))),
+                    expires: DateTime.UtcNow.Add(_configuration.GetSection("JWT").GetValue<TimeSpan>("Lifetime")),
                     signingCredentials: CreateSigningCredentials()
                     );
 
@@ -51,18 +53,28 @@ namespace CarWebService.BLL.Services.Implementations
         }
 
         /// <summary>
-        /// Создание rafresh token.
+        /// Создание refresh токена.
         /// </summary>
-        public string CreateRefreshToken()
+        /// <param name="role">Роль пользователя.</param>
+        /// <param name="email">Электронная почта пользователя.</param>
+        public string CreateRefreshToken(string role, string email)
         {
-            var randomNumber = new byte[32];
-
-            using (var generator = new RNGCryptoServiceProvider())
+            var claims = new List<Claim>
             {
-                generator.GetBytes(randomNumber);
-                string refreshToken = Convert.ToBase64String(randomNumber);
-                return refreshToken;
-            }
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.Email, email)
+            };
+
+            var jwt = new JwtSecurityToken(
+                    issuer: _configuration.GetSection("JWT").GetValue<string>("Issuer"),
+                    audience: _configuration.GetSection("JWT").GetValue<string>("Audience"),
+                    notBefore: DateTime.UtcNow,
+                    claims: claims,
+                    expires: DateTime.UtcNow.Add(_configuration.GetSection("JWT").GetValue<TimeSpan>("RefreshTokenLifetime")),
+                    signingCredentials: CreateSigningCredentials()
+                    );
+
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
         /// <summary>

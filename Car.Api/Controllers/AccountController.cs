@@ -19,15 +19,17 @@ namespace CarWebService.API.Controllers
         private readonly IUserServices _userService;
         private readonly ITokenServices _tokenServices;
         private readonly ISessionServices _sessionServices;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public AccountController(UserManager<User> userManager, IUserServices userService, IMapper mapper, ITokenServices tokenServices, ISessionServices sessionServices)
+        public AccountController(UserManager<User> userManager, IUserServices userService, IMapper mapper, ITokenServices tokenServices, ISessionServices sessionServices, IConfiguration configuration)
         {
             _userManager = userManager;
             _userService = userService;
             _mapper = mapper;
             _tokenServices = tokenServices;
             _sessionServices = sessionServices;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -78,28 +80,29 @@ namespace CarWebService.API.Controllers
             var userId = int.Parse(Request.Headers["userId"]);
             var userDto = await _userService.GetUserByid(userId);
             var session = await _sessionServices.GetSessionByUserId(userId);
+            var refreshTokenLifetime = _configuration.GetSection("JWT").GetValue<TimeSpan>("RefreshTokenLifetime");
             var refreshTokenCookie = Request.Cookies["refreshToken"];
 
-            if (session.RefreshToken != refreshTokenCookie && session.ValidTo > DateTime.UtcNow)
+            if (session.RefreshToken != refreshTokenCookie && session.ValidTo < DateTime.UtcNow)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;//Явно присваиваем код ответа, т.к. Results.NotFound() вернет ответ с кодом 200, а NotFound 404 запишет в тело ответа
                 return Results.NotFound();
             }
 
-            var refreshToken = _tokenServices.CreateRefreshToken();
-            var accessToken = _tokenServices.CreateToken(userDto.RoleName);
+            var refreshToken = _tokenServices.CreateRefreshToken(userDto.RoleName, userDto.Email);
+            var accessToken = _tokenServices.CreateToken(userDto.RoleName, userDto.Email);
 
             session.RefreshToken = refreshToken;
-            session.ValidTo = DateTime.UtcNow.Add(TimeSpan.FromMinutes(5));
+            session.ValidTo = DateTime.UtcNow.Add(refreshTokenLifetime);
 
             await _sessionServices.UpdateSession(session);
 
             Response.Cookies.Delete("refreshToken");
 
-            var cookieForRefrshToken = new CookieOptions //Создание кук
+            var cookieForRefrshToken = new CookieOptions //Создание кук для рефреш токена
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.Add(TimeSpan.FromMinutes(5)),
+                Expires = DateTime.UtcNow.Add(refreshTokenLifetime),
                 SameSite = SameSiteMode.None,
                 Secure = true
             };
@@ -126,17 +129,18 @@ namespace CarWebService.API.Controllers
         /// <summary>
         /// Выдает токен для аутентифицированного пользователя.
         /// </summary>
-        /// <param name="role">Роль пользователя.</param>
-        /// <returns>AccessToken, RefreshToken, Role</returns>
+        /// <param name="user">Пользователь.</param>
+        /// <returns>AccessToken, Роль пользователя, Идентификатор пользователя.</returns>
         private async Task<AuthResponse> GetToken(User user)
         {
-            var accessToken = _tokenServices.CreateToken(user.Role.Name);
-            var refreshToken = _tokenServices.CreateRefreshToken();
+            var accessToken = _tokenServices.CreateToken(user.Role.Name, user.Email);
+            var refreshToken = _tokenServices.CreateRefreshToken(user.Role.Name, user.Email);
+            var refreshTokenLifetime = _configuration.GetSection("JWT").GetValue<TimeSpan>("RefreshTokenLifetime");
 
-            var cookieForRefrshToken = new CookieOptions //Создание кук
+            var cookieForRefrshToken = new CookieOptions //Создание кук для рефреш токена
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.Add(TimeSpan.FromMinutes(5)),
+                Expires = DateTime.UtcNow.Add(refreshTokenLifetime),
                 SameSite = SameSiteMode.None,
                 Secure = true
             };
@@ -146,7 +150,7 @@ namespace CarWebService.API.Controllers
             var newSession = new Session
             {
                 RefreshToken = refreshToken,
-                ValidTo = DateTime.UtcNow.Add(TimeSpan.FromMinutes(5)),
+                ValidTo = DateTime.UtcNow.Add(refreshTokenLifetime),
                 User = user,
                 UserId = user.Id
             };

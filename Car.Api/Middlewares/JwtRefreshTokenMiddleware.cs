@@ -1,4 +1,6 @@
-﻿namespace CarWebService.API.Middlewares
+﻿using System.IdentityModel.Tokens.Jwt;
+
+namespace CarWebService.API.Middlewares
 {
     public class JwtRefreshTokenMiddleware
     {
@@ -15,8 +17,12 @@
 
             if (context.Response.Headers.ContainsKey("IS-TOKEN-EXPIRED"))
             {
-                //Если refresh token истек воз-ем heder с информацией об этом на клиент
-                if (context.Request.Cookies["refreshToken"] == null)
+                var refreshToken = context.Request.Cookies["refreshToken"];
+                var handler = new JwtSecurityTokenHandler();
+                var jwtTokenRefrshToken = handler.ReadJwtToken(refreshToken);
+                var refreshTokenValidTo = jwtTokenRefrshToken.ValidTo;
+
+                if (refreshToken == null && refreshTokenValidTo < DateTime.UtcNow) //Если refresh token истек воз-ем heder с информацией об этом на клиент
                 {
                     context.Response.Headers.Add("IS-REFRESHTOKEN-EXPIRED", "true");
                     return;
