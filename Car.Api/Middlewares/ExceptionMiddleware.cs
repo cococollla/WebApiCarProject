@@ -47,5 +47,3 @@ namespace CarWebService.API.Middlewares
         }
     }
 }
-
-

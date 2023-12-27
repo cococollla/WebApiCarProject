@@ -42,4 +42,3 @@ namespace CarWebService.DAL.Models.Entity
         }
     }
 }
-

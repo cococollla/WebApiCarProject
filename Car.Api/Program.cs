@@ -71,7 +71,6 @@ builder.Services.AddIdentityCore<User>(options =>
     .AddSignInManager<SignInManager<User>>()
     .AddEntityFrameworkStores<ApplicationContext>();
 
-
 //Подключение схемы авторизации через JwtBearer
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -100,9 +99,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 return Task.CompletedTask;
             }
         };
-
     });
-
 
 var app = builder.Build();
 
