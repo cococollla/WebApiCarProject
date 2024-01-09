@@ -22,12 +22,12 @@ namespace CarWebService.DAL.Models.Entity
         public DateTime ValidTo { get; set; }
 
         /// <summary>
-        /// Внешний ключ. иеднтификатор пользователя.
+        /// Внешний ключ - иеднтификатор пользователя.
         /// </summary>
         public int UserId { get; set; }
 
         /// <summary>
-        /// Ссылка на таблиц пользователей.
+        /// Ссылка на таблицу пользователей.
         /// </summary>
         public User User { get; set; }
     }

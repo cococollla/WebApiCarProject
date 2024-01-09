@@ -21,7 +21,7 @@ namespace CarWebService.DAL.Repositories.Contracts
         /// </summary>
         /// <param name="id">Идентификатор по которому будет найден пользователь.</param>
         /// <returns>Данные пользователя.</returns>
-        public Task<User> GetUserByid(int id);
+        public Task<User> GetUserById(int id);
 
         /// <summary>
         /// Удаляет запись о пользователе из БД

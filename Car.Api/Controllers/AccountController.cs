@@ -22,7 +22,12 @@ namespace CarWebService.API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public AccountController(UserManager<User> userManager, IUserServices userService, IMapper mapper, ITokenServices tokenServices, ISessionServices sessionServices, IConfiguration configuration)
+        public AccountController(UserManager<User> userManager,
+            IUserServices userService,
+            IMapper mapper,
+            ITokenServices tokenServices,
+            ISessionServices sessionServices,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _userService = userService;
@@ -78,19 +83,19 @@ namespace CarWebService.API.Controllers
         public async Task<IResult> RefreshToken()
         {
             var userId = int.Parse(Request.Headers["userId"]);
-            var userDto = await _userService.GetUserByid(userId);
+            var user = await _userService.GetUserById(userId);
             var session = await _sessionServices.GetSessionByUserId(userId);
             var refreshTokenLifetime = _configuration.GetSection("JWT").GetValue<TimeSpan>("RefreshTokenLifetime");
             var refreshTokenCookie = Request.Cookies["refreshToken"];
 
-            if (session.RefreshToken != refreshTokenCookie && session.ValidTo < DateTime.UtcNow)
+            if (session.RefreshToken != refreshTokenCookie || session.ValidTo < DateTime.UtcNow)
             {
                 Response.StatusCode = StatusCodes.Status404NotFound;//Явно присваиваем код ответа, т.к. Results.NotFound() вернет ответ с кодом 200, а NotFound 404 запишет в тело ответа
                 return Results.NotFound();
             }
 
-            var refreshToken = _tokenServices.CreateRefreshToken(userDto.RoleName, userDto.Email);
-            var accessToken = _tokenServices.CreateToken(userDto.RoleName, userDto.Email);
+            var refreshToken = _tokenServices.CreateRefreshToken(user.RoleName, user.Email);
+            var accessToken = _tokenServices.CreateToken(user.RoleName, user.Email);
 
             session.RefreshToken = refreshToken;
             session.ValidTo = DateTime.UtcNow.Add(refreshTokenLifetime);
@@ -108,7 +113,7 @@ namespace CarWebService.API.Controllers
             var cookieForRefrshToken = new CookieOptions //Создание кук для рефреш токена
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.Add(refreshTokenLifetime),
+                Expires = session.ValidTo,
                 SameSite = SameSiteMode.None,
                 Secure = true
             };
@@ -125,7 +130,7 @@ namespace CarWebService.API.Controllers
         public async Task<IActionResult> Logout()
         {
             var userId = int.Parse(Request.Headers["userId"]);
-            await _sessionServices.DeleteSesion(userId);
+            await _sessionServices.DeleteSession(userId);
 
             Response.Cookies.Delete("refreshToken");
 
@@ -141,12 +146,12 @@ namespace CarWebService.API.Controllers
         {
             var accessToken = _tokenServices.CreateToken(user.Role.Name, user.Email);
             var refreshToken = _tokenServices.CreateRefreshToken(user.Role.Name, user.Email);
-            var refreshTokenLifetime = _configuration.GetSection("JWT").GetValue<TimeSpan>("RefreshTokenLifetime");
+            var refreshTokenValidTo = DateTime.UtcNow.Add(_configuration.GetSection("JWT").GetValue<TimeSpan>("RefreshTokenLifetime"));
 
             var cookieForRefrshToken = new CookieOptions //Создание кук для рефреш токена
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.Add(refreshTokenLifetime),
+                Expires = refreshTokenValidTo,
                 SameSite = SameSiteMode.None,
                 Secure = true
             };
@@ -156,7 +161,7 @@ namespace CarWebService.API.Controllers
             var newSession = new Session
             {
                 RefreshToken = refreshToken,
-                ValidTo = DateTime.UtcNow.Add(refreshTokenLifetime),
+                ValidTo = refreshTokenValidTo,
                 User = user,
                 UserId = user.Id
             };

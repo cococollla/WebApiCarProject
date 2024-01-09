@@ -20,7 +20,7 @@ namespace CarWebService.BLL.Services.Contracts
         /// Получение пользователя.
         /// </summary>
         /// <param name="id">Идентификатор пользователя.</param>
-        public Task<UserDto> GetUserByid(int id);
+        public Task<UserDto> GetUserById(int id);
 
         /// <summary>
         /// Удаление пользователя.

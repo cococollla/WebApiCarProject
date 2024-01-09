@@ -54,9 +54,9 @@ namespace CarWebService.BLL.Services.Implementations
         /// Получение пользователя.
         /// </summary>
         /// <param name="id">Идентификатор пользователя.</param>
-        public async Task<UserDto> GetUserByid(int id)
+        public async Task<UserDto> GetUserById(int id)
         {
-            var user = await _userRepository.GetUserByid(id);
+            var user = await _userRepository.GetUserById(id);
             var userDto = _mapper.Map<UserDto>(user);
 
             return userDto;

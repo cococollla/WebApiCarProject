@@ -5,7 +5,7 @@ namespace CarWebService.DAL.Repositories.Contracts
     public interface ISessionRepository
     {
         /// <summary>
-        /// Добавление записи в БД.
+        /// Добавляет запись сессии.
         /// </summary>
         /// <param name="sessionData">Данные сессии.</param>
         public Task<int> CreateSession(Session sessionData);
@@ -27,7 +27,7 @@ namespace CarWebService.DAL.Repositories.Contracts
         /// Удаление записи сессии.
         /// </summary>
         /// <param name="userId">Идентификатор пользователя.</param>
-        public Task<bool> DeleteSesion(int userId);
+        public Task<bool> DeleteSession(int userId);
 
         /// <summary>
         /// Получение рефреш токена.

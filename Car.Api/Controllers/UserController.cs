@@ -51,7 +51,7 @@ namespace CarWebService.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUserById(int id)
         {
-            var user = await _userServices.GetUserByid(id);
+            var user = await _userServices.GetUserById(id);
 
             if (user == null)
             {

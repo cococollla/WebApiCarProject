@@ -1,7 +1,7 @@
 ﻿namespace CarWebService.API.Models
 {
     /// <summary>
-    /// Моделья для ответа прни успешной авторизации.
+    /// Моделья для ответа при успешной авторизации.
     /// </summary>
     public class AuthResponse
     {

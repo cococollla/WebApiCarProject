@@ -17,7 +17,7 @@ namespace CarWebService.DAL.Repositories.Implementations
         }
 
         /// <summary>
-        /// Добавление записи в БД.
+        /// Добавляет запись сессии.
         /// </summary>
         /// <param name="sessionData">Данные сессии.</param>
         public async Task<int> CreateSession(Session sessionData)
@@ -32,7 +32,7 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// Удаление записи сессии.
         /// </summary>
         /// <param name="userId">Идентификатор пользователя.</param>
-        public async Task<bool> DeleteSesion(int userId)
+        public async Task<bool> DeleteSession(int userId)
         {
             var session = await _context.Sessions.FirstOrDefaultAsync(s => s.UserId == userId);
 
