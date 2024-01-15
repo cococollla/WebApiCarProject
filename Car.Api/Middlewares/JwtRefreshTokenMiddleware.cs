@@ -18,8 +18,6 @@ namespace CarWebService.API.Middlewares
             if (context.Response.Headers.ContainsKey("IS-TOKEN-EXPIRED"))
             {
                 var refreshToken = context.Request.Cookies["refreshToken"];
-                var handler = new JwtSecurityTokenHandler();
-                var jwtTokenRefrshToken = handler.ReadJwtToken(refreshToken);
 
                 if (refreshToken == null)
                 {
@@ -27,6 +25,8 @@ namespace CarWebService.API.Middlewares
                     return;
                 }
 
+                var handler = new JwtSecurityTokenHandler();
+                var jwtTokenRefrshToken = handler.ReadJwtToken(refreshToken);
                 var refreshTokenValidTo = jwtTokenRefrshToken.ValidTo;
 
                 if (refreshTokenValidTo < DateTime.UtcNow) //Если refresh token истек воз-ем heder с информацией об этом на клиент
