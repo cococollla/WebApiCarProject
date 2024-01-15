@@ -26,7 +26,7 @@
         public double Price { get; set; }
 
         /// <summary>
-        /// Краткое описние.
+        /// Краткое описание.
         /// </summary>
         public string? ShortDescription { get; set; }
 

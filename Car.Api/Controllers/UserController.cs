@@ -106,7 +106,7 @@ namespace CarWebService.API.Controllers
         }
 
         /// <summary>
-        /// Удаления пользователя из БД.
+        /// Удаление пользователя из БД.
         /// </summary>
         /// <param name="id">Идентфикатор пользователя для удаления.</param>
         [HttpDelete("{id}")]

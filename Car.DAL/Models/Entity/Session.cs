@@ -2,6 +2,9 @@
 
 namespace CarWebService.DAL.Models.Entity
 {
+    /// <summary>
+    /// Модель сессии.
+    /// </summary>
     public class Session
     {
         /// <summary>
@@ -22,7 +25,7 @@ namespace CarWebService.DAL.Models.Entity
         public DateTime ValidTo { get; set; }
 
         /// <summary>
-        /// Внешний ключ - иеднтификатор пользователя.
+        /// Внешний ключ - идентификатор пользователя.
         /// </summary>
         public int UserId { get; set; }
 

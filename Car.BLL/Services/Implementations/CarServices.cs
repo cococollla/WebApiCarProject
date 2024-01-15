@@ -8,7 +8,7 @@ using CarWebService.DAL.Repositories.Contracts;
 namespace CarWebService.BLL.Services.Implementations
 {
     /// <summary>
-    /// Безнес логика для автомобиля.
+    /// Бизнес логика для автомобиля.
     /// </summary>
     public class CarServices : ICarServices
     {

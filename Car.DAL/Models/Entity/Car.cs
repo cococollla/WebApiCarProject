@@ -11,7 +11,7 @@
         public int Id { get; set; }
 
         /// <summary>
-        /// год выпуска автомобиля.
+        /// Год выпуска автомобиля.
         /// </summary>
         public string YearRelese { get; set; }
 
@@ -41,7 +41,7 @@
         public int BrandId { get; set; }
 
         /// <summary>
-        /// Ссылка на объект модели брэндов для автомобилей.
+        /// Ссылка на объект модели брендов для автомобилей.
         /// </summary>
         public Brand Brand { get; set; }
     }

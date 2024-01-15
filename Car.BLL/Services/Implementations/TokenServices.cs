@@ -8,7 +8,7 @@ using System.Text;
 namespace CarWebService.BLL.Services.Implementations
 {
     /// <summary>
-    /// Скрвис для работы с JWT токенами.
+    /// Сервис для работы с JWT токенами.
     /// </summary>
     public class TokenServices : ITokenServices
     {
