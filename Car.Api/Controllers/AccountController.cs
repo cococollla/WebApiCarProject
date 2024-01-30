@@ -62,7 +62,7 @@ namespace CarWebService.API.Controllers
         /// </summary>
         /// <param name="request">Данные пользователя для регистрации.</param>
         [HttpPost]
-        public async Task<ActionResult<User>> Signup([FromForm] UserDto request)
+        public async Task<ActionResult<User>> Signup(UserDto request)
         {
             var user = _mapper.Map<User>(request);
             user.Role = await _userService.GetDefaultRole();

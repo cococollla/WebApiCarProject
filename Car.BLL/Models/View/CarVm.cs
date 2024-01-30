@@ -5,6 +5,7 @@
     /// </summary>
     public class CarVm
     {
+        public int Id { get; set; }
         /// <summary>
         /// Название цвета.
         /// </summary>

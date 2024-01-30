@@ -33,5 +33,10 @@ namespace CarWebService.BLL.Services.Contracts
         /// </summary>
         /// <param name="id">Идентификатор автомобиля.</param>
         public Task<bool> DeleteCar(int id);
+
+        /// <summary>
+        /// Получает заданное количество записей для страницы.
+        /// </summary>
+        public Task<List<CarVm>> GetByPage(int page, int pageSize);
     }
 }

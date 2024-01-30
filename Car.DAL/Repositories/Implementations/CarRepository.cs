@@ -111,5 +111,23 @@ namespace CarWebService.DAL.Repositories.Implementations
 
             return colors;
         }
+
+        /// <summary>
+        /// Получает заданное количество записей для страницы.
+        /// </summary>
+        /// <param name="page">Номер страницы.</param>
+        /// <param name="pageSize">Количество записей.</param>
+        /// <returns>Список автомобилей.</returns>
+        public async Task<List<Car>> GetByPage(int page, int pageSize)
+        {
+            return await _context.Cars
+                                    .Include(b => b.Brand)
+                                    .Include(c => c.Color)
+                                    .OrderBy(c => c.Id)
+                                    .AsNoTracking()
+                                    .Skip((page - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync();
+        }
     }
 }

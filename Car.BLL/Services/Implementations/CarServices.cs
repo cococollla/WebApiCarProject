@@ -78,5 +78,17 @@ namespace CarWebService.BLL.Services.Implementations
 
             return result;
         }
+
+
+        /// <summary>
+        /// Получает заданное количество записей для страницы.
+        /// </summary>
+        public async Task<List<CarVm>> GetByPage(int page, int pageSize)
+        {
+            var cars = await _carRepository.GetByPage(page, pageSize);
+            var carsDto = _mapper.Map<List<CarVm>>(cars);
+
+            return carsDto;
+        }
     }
 }

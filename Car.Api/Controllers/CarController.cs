@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using CarWebService.API.Models;
 using CarWebService.BLL.Models.DtoModels;
 using CarWebService.BLL.Models.View;
 using CarWebService.BLL.Services.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
@@ -72,7 +72,6 @@ namespace CarWebService.API.Controllers
         /// <summary>
         /// Вывод записей всех автомобилей.
         /// </summary>
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<List<CarVm>>> GetCars()
         {
@@ -101,6 +100,26 @@ namespace CarWebService.API.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCarsByPage(int page, int pageSize)
+        {
+            var carsByPage = await _carServices.GetByPage(page, pageSize);
+            var cars = await _carServices.GetAllCars();
+
+            if (carsByPage == null || cars == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            var response = new PaginateResponse
+            {
+                Cars = carsByPage,
+                TotalItems = cars.Count()
+            };
+
+            return Ok(response);
         }
     }
 }

@@ -46,5 +46,13 @@ namespace CarWebService.DAL.Repositories.Contracts
         /// </summary>
         /// <returns>Список цветов.</returns>
         public Task<List<Color>> GetColors();
+
+        /// <summary>
+        /// Получает заданное количество записей для страницы.
+        /// </summary>
+        /// <param name="page">Номер страницы.</param>
+        /// <param name="pageSize">Количество записей.</param>
+        /// <returns>Список автомобилей.</returns>
+        public Task<List<Car>> GetByPage(int page, int pageSize);
     }
 }
