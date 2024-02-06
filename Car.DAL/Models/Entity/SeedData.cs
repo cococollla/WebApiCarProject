@@ -1,5 +1,4 @@
 ﻿using CarWebService.DAL.Repositories.Contracts;
-using CarWebService.DAL.Repositories.Implementations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +19,7 @@ namespace CarWebService.DAL.Models.Entity
             using var serviceScope = app.ApplicationServices.CreateScope();
 
             AddUsers(serviceScope.ServiceProvider.GetService<UserManager<User>>()!, serviceScope.ServiceProvider.GetService<RoleManager<Role>>()!);
-            AddCars(serviceScope.ServiceProvider.GetService<CarRepository>()!);
+            AddCars(serviceScope.ServiceProvider.GetService<ICarRepository>()!);
         }
 
         /// <summary>
@@ -46,7 +45,8 @@ namespace CarWebService.DAL.Models.Entity
 
         private static void AddCars(ICarRepository carRepository)
         {
-            if (carRepository.GetAllCars == null)
+            var cars = carRepository.GetAllCars().GetAwaiter().GetResult();
+            if (cars.Count == 0)
             {
                 var carsToAdd = new[]
                 {
@@ -113,7 +113,8 @@ namespace CarWebService.DAL.Models.Entity
                         ShortDescription = "Luxury sedan",
                         YearRelese = "2022",
                         Price = 600000
-                    },                    new Car
+                    },
+                    new Car
                     {
                         BrandId = 1,
                         ColorId = 1,
@@ -157,7 +158,7 @@ namespace CarWebService.DAL.Models.Entity
 
                 foreach (var car in carsToAdd)
                 {
-                    carRepository.AddCar(car);
+                    carRepository.AddCar(car).GetAwaiter().GetResult();
                 }
             }
         }
