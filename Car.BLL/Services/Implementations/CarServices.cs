@@ -90,5 +90,28 @@ namespace CarWebService.BLL.Services.Implementations
 
             return carsDto;
         }
+
+        /// <summary>
+        /// Получает список брендов автомобилей.
+        /// </summary>
+        /// <returns>Список брендов.</returns>
+        public async Task<List<BrandVm>> GetBrands()
+        {
+            var brands = await _carRepository.GetBrands();
+            var brandsVm = _mapper.Map<List<BrandVm>>(brands);
+
+            return brandsVm;
+        }
+
+        /// <summary>
+        /// Получает список цветов для автомобилей.
+        /// </summary>
+        /// <returns>Список цветов.</returns>
+        public async Task<List<ColorVm>> GetColors()
+        {
+            var colors = await _carRepository.GetColors();
+            var colorsVm = _mapper.Map<List<ColorVm>>(colors);
+            return colorsVm;
+        }
     }
 }

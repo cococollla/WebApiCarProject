@@ -38,5 +38,17 @@ namespace CarWebService.BLL.Services.Contracts
         /// Получает заданное количество записей для страницы.
         /// </summary>
         public Task<List<CarVm>> GetByPage(int page, int pageSize);
+
+        /// <summary>
+        /// Получает список брендов автомобилей.
+        /// </summary>
+        /// <returns>Список брендов.</returns>
+        public Task<List<BrandVm>> GetBrands();
+
+        /// <summary>
+        /// Получает список цветов для автомобилей.
+        /// </summary>
+        /// <returns>Список цветов.</returns>
+        public Task<List<ColorVm>> GetColors();
     }
 }

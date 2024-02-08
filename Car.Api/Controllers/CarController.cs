@@ -102,6 +102,13 @@ namespace CarWebService.API.Controllers
             return Ok();
         }
 
+
+        /// <summary>
+        /// Получает заданное количество записей для страницы.
+        /// </summary>
+        /// <param name="page">Номер страницы.</param>
+        /// <param name="pageSize">Количество записей.</param>
+        /// <returns>Список автомобилей.</returns>
         [HttpGet]
         public async Task<IActionResult> GetCarsByPage(int page, int pageSize)
         {
@@ -120,6 +127,41 @@ namespace CarWebService.API.Controllers
             };
 
             return Ok(response);
+        }
+
+
+        /// <summary>
+        /// Получает список цветов для автомобилей.
+        /// </summary>
+        /// <returns>Список цветов.</returns>
+        [HttpGet]
+        public async Task<ActionResult<List<ColorVm>>> GetColors()
+        {
+            var colors = await _carServices.GetColors();
+
+            if (colors == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return Ok(colors);
+        }
+
+        /// <summary>
+        /// Получает список брендов автомобилей.
+        /// </summary>
+        /// <returns>Список брендов.</returns>
+        [HttpGet]
+        public async Task<ActionResult<List<BrandVm>>> GetBrands()
+        {
+            var brands = await _carServices.GetBrands();
+
+            if (brands == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return Ok(brands);
         }
     }
 }
