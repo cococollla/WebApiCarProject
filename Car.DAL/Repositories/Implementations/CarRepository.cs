@@ -53,7 +53,11 @@ namespace CarWebService.DAL.Repositories.Implementations
         /// <returns>Список автомобилей.</returns>
         public async Task<List<Car>> GetAllCars()
         {
-            return await _context.Cars.Include(b => b.Brand).Include(c => c.Color).ToListAsync();
+            return await _context.Cars
+                .Include(b => b.Brand)
+                .Include(c => c.Color)
+                .OrderBy(c => c.Id)
+                .ToListAsync();
         }
 
         /// <summary>
