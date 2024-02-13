@@ -42,19 +42,18 @@ namespace CarWebService.API.Controllers
         /// </summary>
         /// <param name="request">Данные для входа.</param>
         [HttpPost]
-        public async Task<IResult> Login(AuthRequest request)
+        public async Task<IActionResult> Login(AuthRequest request)
         {
             var user = await _userService.GetExistingUser(request.Email, request.Password);
 
             if (user == null)
             {
-                Response.StatusCode = StatusCodes.Status404NotFound;//Явно присваиваем код ответа, т.к. Results.NotFound() вернет ответ с кодом 200, а NotFound 404 запишет в тело ответа
-                return Results.NotFound();
+                return StatusCode(StatusCodes.Status404NotFound);
             }
 
             var response = await GetToken(user);
 
-            return Results.Json(response);
+            return Ok(response);
         }
 
         /// <summary>

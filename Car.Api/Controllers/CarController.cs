@@ -3,6 +3,7 @@ using CarWebService.API.Models;
 using CarWebService.BLL.Models.DtoModels;
 using CarWebService.BLL.Models.View;
 using CarWebService.BLL.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarWebService.API.Controllers
@@ -28,6 +29,7 @@ namespace CarWebService.API.Controllers
         /// </summary>
         /// <param name="carDto">Данные автомобиля.</param>
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> CreateCar(CarDto carDto)
         {
             var carId = await _carServices.AddCar(carDto);
