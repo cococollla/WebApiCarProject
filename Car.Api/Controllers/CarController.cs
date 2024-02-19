@@ -112,6 +112,7 @@ namespace CarWebService.API.Controllers
         /// <param name="pageSize">Количество записей.</param>
         /// <returns>Список автомобилей.</returns>
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetCarsByPage(int page, int pageSize)
         {
             var carsByPage = await _carServices.GetByPage(page, pageSize);

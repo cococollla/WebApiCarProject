@@ -79,23 +79,22 @@ namespace CarWebService.API.Controllers
         /// Обновляет истекший access token.
         /// </summary>
         [HttpGet]
-        public async Task<IResult> RefreshToken()
+        public async Task<IActionResult> RefreshToken()
         {
             var userId = int.Parse(Request.Headers["userId"]);
             var user = await _userService.GetUserById(userId);
             var session = await _sessionServices.GetSessionByUserId(userId);
             var refreshTokenLifetime = _configuration.GetSection("JWT").GetValue<TimeSpan>("RefreshTokenLifetime");
-            var refreshTokenCookie = Request.Cookies["refreshToken"];
+            var refreshTokenCookie = HttpContext.Request.Cookies["refreshToken"];
+            //var refreshTokenCookie = Request.Cookies["refreshToken"];
 
             if (session.RefreshToken != refreshTokenCookie || session.ValidTo < DateTime.UtcNow)
             {
-                Response.StatusCode = StatusCodes.Status404NotFound;//Явно присваиваем код ответа, т.к. Results.NotFound() вернет ответ с кодом 200, а NotFound 404 запишет в тело ответа
-                return Results.NotFound();
+                return StatusCode(StatusCodes.Status404NotFound);
             }
 
             var refreshToken = _tokenServices.CreateRefreshToken(user.RoleName, user.Email);
             var accessToken = _tokenServices.CreateToken(user.RoleName, user.Email);
-
             session.RefreshToken = refreshToken;
             session.ValidTo = DateTime.UtcNow.Add(refreshTokenLifetime);
 
@@ -103,8 +102,7 @@ namespace CarWebService.API.Controllers
 
             if (!result)
             {
-                Response.StatusCode = StatusCodes.Status404NotFound;//Явно присваиваем код ответа, т.к. Results.NotFound() вернет ответ с кодом 200, а NotFound 404 запишет в тело ответа
-                return Results.NotFound();
+                return StatusCode(StatusCodes.Status404NotFound);
             }
 
             Response.Cookies.Delete("refreshToken");
@@ -119,7 +117,7 @@ namespace CarWebService.API.Controllers
 
             Response.Cookies.Append("refreshToken", refreshToken, cookieForRefrshToken);//добавление refreshToken в куки на неделю
 
-            return Results.Json(accessToken);
+            return Ok(accessToken);
         }
 
         /// <summary>
